@@ -1,0 +1,250 @@
+#
+# Sets Prezto options.
+#
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
+
+#
+# General
+#
+
+# Set case-sensitivity for completion, history lookup, etc.
+# zstyle ':prezto:*:*' case-sensitive 'yes'
+
+# Color output (auto set to 'no' on dumb terminals).
+zstyle ':prezto:*:*' color 'yes'
+
+# Set the Zsh modules to load (man zshmodules).
+# zstyle ':prezto:load' zmodule 'attr' 'stat'
+
+# Set the Zsh functions to load (man zshcontrib).
+zstyle ':prezto:load' zfunction 'zargs' 'zmv'
+
+# Set the Prezto modules to load (browse modules).
+# The order matters.
+
+
+zstyle ':prezto:module:gnu-utility' prefix 'g'
+zstyle ':prezto:load' pmodule \
+  'environment' \
+  'terminal' \
+  'editor' \
+  'history' \
+  'directory' \
+  'spectrum' \
+  'utility' \
+  'completion' \
+  'git' \
+  'syntax-highlighting' \
+  'prompt'
+
+#
+# Autosuggestions
+#
+
+# Set the query found color.
+zstyle ':prezto:module:autosuggestions:color' found ''
+
+#
+# Editor
+#
+
+# Set the key mapping style to 'emacs' or 'vi'.
+zstyle ':prezto:module:editor' key-bindings 'emacs'
+
+# Auto convert .... to ../..
+zstyle ':prezto:module:editor' dot-expansion 'yes'
+
+#
+# Git
+#
+
+# Ignore submodules when they are 'dirty', 'untracked', 'all', or 'none'.
+zstyle ':prezto:module:git:status:ignore' submodules 'all'
+
+#
+# GNU Utility
+#
+
+# Set the command prefix on non-GNU systems.
+# zstyle ':prezto:module:gnu-utility' prefix 'g'
+
+#
+# History Substring Search
+#
+
+# Set the query found color.
+zstyle ':prezto:module:history-substring-search:color' found ''
+
+# Set the query not found color.
+# zstyle ':prezto:module:history-substring-search:color' not-found ''
+
+# Set the search globbing flags.
+zstyle ':prezto:module:history-substring-search:color' globbing-flags ''
+
+#
+# Pacman
+#
+
+# Set the Pacman frontend.
+# zstyle ':prezto:module:pacman' frontend 'yaourt'
+
+#
+# Prompt
+#
+
+# Set the prompt theme to load.
+# Setting it to 'random' loads a random theme.
+# Auto set to 'off' on dumb terminals.
+zstyle ':prezto:module:prompt' theme 'myparadox'
+zstyle ':prezto:module:prompt' pwd-length 'full'
+
+#
+# Ruby
+#
+
+# Auto switch the Ruby version on directory change.
+# zstyle ':prezto:module:ruby:chruby' auto-switch 'yes'
+
+#
+# Screen
+#
+
+# Auto start a session when Zsh is launched in a local terminal.
+# zstyle ':prezto:module:screen:auto-start' local 'yes'
+
+# Auto start a session when Zsh is launched in a SSH connection.
+# zstyle ':prezto:module:screen:auto-start' remote 'yes'
+
+#
+# SSH
+#
+
+# Set the SSH identities to load into the agent.
+zstyle ':prezto:module:ssh:load' identities 'id_rsa2' 'id_dsa' 'id_github'
+
+#
+# Syntax Highlighting
+#
+
+# Set syntax highlighters.
+# By default, only the main highlighter is enabled.
+zstyle ':prezto:module:syntax-highlighting' highlighters \
+   'main' \
+   'brackets' \
+   'pattern' \
+   'line' \
+   'cursor' \
+   'root'
+#
+# Set syntax highlighting styles.
+zstyle ':prezto:module:syntax-highlighting' styles \
+  'builtin' 'bg=blue' \
+  'command' 'fg=green' \
+  'function' 'fg=yellow'
+
+# Terminal
+#
+zstyle ':prezto:module:syntax-highlighting' pattern \
+   'rm*-rf*' 'fg=white,bold,bg=red'
+
+# Auto set the tab and window titles.
+zstyle ':prezto:module:terminal' auto-title 'always'
+
+# Set the window title format.
+zstyle ':prezto:module:terminal:window-title' format '%n@%m: %s'
+
+# Set the tab title format.
+zstyle ':prezto:module:terminal:tab-title' format '%d: %s'
+
+#
+# Tmux
+#
+# Set the terminal multiplexer title format.
+zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
+
+# Auto start a session when Zsh is launched in a local terminal.
+# zstyle ':prezto:module:tmux:auto-start' local 'yes'
+
+# Auto start a session when Zsh is launched in a SSH connection.
+#zstyle ':prezto:module:tmux:auto-start' remote 'yes'
+
+# Integrate with iTerm2.
+zstyle ':prezto:module:tmux:iterm' integrate 'yes'
+zstyle ':prezto:module:tmux:session' name 'BaseSession'
+
+if [[ `type "$foobar_command_name" > /dev/null` ]]; then
+  # GNU Core Utilities
+  alias ls='ls --group-directories-first'
+
+  if zstyle -t ':prezto:module:utility:ls' color; then
+    if [[ -s "$HOME/.dir_colors" ]]; then
+      eval "$(dircolors --sh "$HOME/.dir_colors")"
+    else
+      eval "$(dircolors --sh)"
+    fi
+
+    alias ls="${aliases[ls]:-ls} --color=auto"
+  else
+    alias ls="${aliases[ls]:-ls} -F"
+  fi
+else
+  # BSD Core Utilities
+  if zstyle -t ':prezto:module:utility:ls' color; then
+    # Define colors for BSD ls.
+    export LSCOLORS='exfxcxdxbxGxDxabagacad'
+
+    # Define colors for the completion system.
+    export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'
+
+    alias ls="${aliases[ls]:-ls} -G"
+  else
+    alias ls="${aliases[ls]:-ls} -F"
+  fi
+fi
+
+alias dv="dirs -v"
+
+####################
+# Module Option Setopt
+####################
+
+setopt pushdminus
+setopt PUSHD_IGNORE_DUPS
+setopt AUTO_PARAM_SLASH
+setopt AUTO_PUSHD
+setopt INTERACTIVE_COMMENTS
+setopt HIST_IGNORE_ALL_DUPS
+setopt INC_APPEND_HISTORY
+
+unsetopt sharehistory
+
+function sshnp() {
+
+  if [ -n "$1" ];
+  then
+    thehost=`grep $1 ~/vde/np.list | awk '{print $1}'`
+    thename=`grep $1 ~/vde/np.list | awk '{print $2}'`
+    shift;
+    if [ -n "$thehost" ];
+    then
+      echo "Connecting to $thename"
+      ssh -o ConnectTimeout=10 -q -t -i ~/vde/Docker-NonProd.pem ec2-user@$thehost "$@"
+    else
+      echo "Host not found"
+   fi
+ else
+   echo "You must specify a host."
+ fi
+}
+
+function kubelsc() {
+
+  if [ -n "$1" ];
+  then
+    kubectl get pods -n $1  -o jsonpath="{.items[*].spec.containers[*].name}" | tr " " "\n"
+  else
+    echo "You must specify a namespace."
+  fi
+}
