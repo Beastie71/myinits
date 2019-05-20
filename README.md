@@ -19,7 +19,7 @@ Installation
 
   2. Modify the zshrc to add new functions dir to path (note could not get the right path off the .zshrc due to sym link so had to put in the repo):
 
-     ```  if [[ -s "${ZDOTDIR:-$HOME}/myinits/functions" ]]; then
-      fpath=(${ZDOTDIR:-$HOME}/myinits/functions $fpath)
-    fi
+     ```if [[ -s "${ZDOTDIR:-$HOME}/myinits/functions" ]]; then
+     fpath=(${ZDOTDIR:-$HOME}/myinits/functions $fpath)
+     fi
      ```
