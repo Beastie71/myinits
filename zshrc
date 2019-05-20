@@ -7,7 +7,7 @@
 
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-  if [[ -s "${ZDOTDIR:-$HOME}/myinits/functions" ]]; then
+  if [[ -e "${ZDOTDIR:-$HOME}/myinits/functions" ]]; then
     fpath=(${ZDOTDIR:-$HOME}/myinits/functions $fpath)
   fi
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
