@@ -189,11 +189,27 @@ if [[ `type "$foobar_command_name" > /dev/null` ]]; then
   else
     alias ls="${aliases[ls]:-ls} -F"
   fi
+elif [[ -x /usr/local/bin/gls ]]; then
+  alias ls='/usr/local/bin/gls --group-directories-first'
+
+  if zstyle -t ':prezto:module:utility:ls' color; then
+    if [[ -s "$HOME/.dir_colors" ]]; then
+      eval "$(gdircolors --sh "$HOME/.dir_colors")"
+    else
+      eval "$(gdircolors --sh)"
+    fi
+
+    alias ls="${aliases[ls]:-ls} --color=auto"
+  else
+    alias ls="${aliases[ls]:-ls} -F"
+  fi
 else
   # BSD Core Utilities
   if zstyle -t ':prezto:module:utility:ls' color; then
+    export JOEBLOW="joejoe"
     # Define colors for BSD ls.
-    export LSCOLORS='exfxcxdxbxGxDxabagacad'
+    #export LSCOLORS='exfxcxdxbxGxDxabagacad'
+    export LSCOLORS='bxfxcxdxbxGxDxabagacad'
 
     # Define colors for the completion system.
     export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'
