@@ -16,7 +16,12 @@ fi
 # Customize to your needs...
 
 USER=`echo $USERNAME`
+THEME=`prompt -c | grep -v Curr | sed 's/ //g'`
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+if [[ "$THEME" == "powerlevel10k" ]]; then
+	source ${HOME}/myinits/p10k.zsh
+fi
 
 PATH="/Users/${USER}/perl5/bin${PATH:+:${PATH}}:/usr/local/bin"; export PATH;
 PERL5LIB="/Users/${USER}/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
