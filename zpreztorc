@@ -237,6 +237,10 @@ setopt INC_APPEND_HISTORY
 
 unsetopt sharehistory
 
+if [[ "$TERM_PROGRAM" == "iTerm.app" && -e ${HOME}/myinits/iterm2_shell_integration.zsh ]]; then
+  source ${HOME}/myinits/iterm2_shell_integration.zsh
+fi
+
 function sshnp() {
 
   if [ -n "$1" ];
