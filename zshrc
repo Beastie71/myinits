@@ -23,7 +23,7 @@ if [[ "$THEME" == "powerlevel10k" ]]; then
 	source ${HOME}/myinits/p10k.zsh
 fi
 
-PATH="/Users/${USER}/perl5/bin${PATH:+:${PATH}}:/usr/local/bin"; export PATH;
+PATH="/Users/${USER}/perl5/bin${PATH:+:${PATH}}:/usr/local/bin:${GOPATH}/bin"; export PATH;
 PERL5LIB="/Users/${USER}/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
 PERL_LOCAL_LIB_ROOT="/Users/${USER}/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
 PERL_MB_OPT="--install_base \"/Users/${USER}/perl5\""; export PERL_MB_OPT;
