@@ -2,7 +2,6 @@
 if /bin/ls --help > /dev/null 2>&1 ;  then
 #if [[ `type "$foobar_command_name" > /dev/null` ]]; then
   # GNU Core Utilities
-  echo "Good regular ls"
   alias ls='ls --group-directories-first'
 
   if zstyle -t ':prezto:module:utility:ls' color; then
@@ -17,7 +16,6 @@ if /bin/ls --help > /dev/null 2>&1 ;  then
     alias ls="${aliases[ls]:-ls} -F"
   fi
 elif [[ -x /usr/local/bin/gls ]]; then
-  echo "Gnu based ls"
   alias ls='/usr/local/bin/gls --group-directories-first'
 
   if zstyle -t ':prezto:module:utility:ls' color; then
@@ -32,7 +30,6 @@ elif [[ -x /usr/local/bin/gls ]]; then
     alias ls="${aliases[ls]:-ls} -F"
   fi
 else
-  "BSD ls"
   # BSD Core Utilities
   if zstyle -t ':prezto:module:utility:ls' color; then
     export JOEBLOW="joejoe"
@@ -53,7 +50,6 @@ fi
 alias ls='ls --group-directories-first'
 alias ls="${aliases[ls]:-ls} --color=auto"
 alias ls="${aliases[ls]:-ls} -F"
-alias ls='/usr/local/bin/gls --group-directories-first'
 alias ls="${aliases[ls]:-ls} --color=auto"
 alias ls="${aliases[ls]:-ls} -F"
 alias ls="${aliases[ls]:-ls} -G"
