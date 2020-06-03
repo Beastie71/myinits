@@ -17,6 +17,7 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
     fpath=(${ZDOTDIR:-$HOME}/myinits/functions $fpath)
   fi
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+  bindkey "^j" autosuggest-accept
 fi
 
 # Customize to your needs...
@@ -43,7 +44,7 @@ then
   zinit load z
 #  zinit load zsh-autosuggestions
   bindkey "ç" fzf-cd-widget
-  bindkey "^j" autosuggest-accept
+
   if [[ -e /usr/local/Cellar/fzf/0.21.1/shell/key-bindings.zsh ]]; then
     source /usr/local/Cellar/fzf/0.21.1/shell/key-bindings.zsh
   fi
