@@ -65,7 +65,7 @@ then
 #--bind 'ctrl-e:execute(echo {+} | xargs -o vim)'
 #--bind 'ctrl-v:execute(code {+})'
 #"
-  if [[ -e /usr/local/bin/fd ]]; then
+  if [[ -e /usr/local/bin/fd || -e /usr/bin/fd ]]; then
     export FZF_DEFAULT_COMMAND="fd --hidden --follow --exclude '.git'"
   fi
   # CTRL-T's command
@@ -75,7 +75,7 @@ then
   export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND --type d"
   export _ZL_HYPHEN=1
   # Ctrl-R command preview ? toggles
-  export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
+  export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3%:wrap "
 fi
 
 # find-in-file - usage: fif <SEARCH_TERM>
