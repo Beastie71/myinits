@@ -1,4 +1,6 @@
-if [[ `type "$foobar_command_name" > /dev/null` ]]; then
+
+if /bin/ls --help > /dev/null 2>&1 ;  then
+#if [[ `type "$foobar_command_name" > /dev/null` ]]; then
   # GNU Core Utilities
   alias ls='ls --group-directories-first'
 
