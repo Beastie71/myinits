@@ -10,12 +10,13 @@
 
 if [[ -s "${ZDOTDIR:-$HOME}/.zinit/bin/zinit.zsh" ]]; then
   source ~/.zinit/bin/zinit.zsh
-  if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-    if [[ -e "${ZDOTDIR:-$HOME}/myinits/functions" ]]; then
-      fpath=(${ZDOTDIR:-$HOME}/myinits/functions $fpath)
-    fi
-    source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+fi
+
+if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
+  if [[ -e "${ZDOTDIR:-$HOME}/myinits/functions" ]]; then
+    fpath=(${ZDOTDIR:-$HOME}/myinits/functions $fpath)
   fi
+  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
 # Customize to your needs...
