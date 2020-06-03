@@ -47,7 +47,10 @@ then
 
   if [[ -e /usr/local/Cellar/fzf/0.21.1/shell/key-bindings.zsh ]]; then
     source /usr/local/Cellar/fzf/0.21.1/shell/key-bindings.zsh
+  elif [[ -e /etc/zsh_completion.d/fzf-key-bindings ]]; then
+    source /etc/zsh_completion.d/fzf-key-bindings
   fi
+  
   export FZF_COMPLETION_TRIGGER='**'
   export FZF_DEFAULT_OPTS="
 --layout=reverse
