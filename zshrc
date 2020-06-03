@@ -43,6 +43,7 @@ then
   zinit load z
 #  zinit load zsh-autosuggestions
   bindkey "ç" fzf-cd-widget
+  bindkey "^j" autosuggest-accept
   if [[ -e /usr/local/Cellar/fzf/0.21.1/shell/key-bindings.zsh ]]; then
     source /usr/local/Cellar/fzf/0.21.1/shell/key-bindings.zsh
   fi
