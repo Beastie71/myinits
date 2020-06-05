@@ -20,11 +20,9 @@ fi
 
 USER=`echo $USERNAME`
 THEME=`prompt -c | grep -v Curr | sed 's/ //g'`
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+[[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && source "${HOME}/.iterm2_shell_integration.zsh"
 
-if [[ "$THEME" == "powerlevel10k" ]]; then
-	source ${HOME}/myinits/p10k.zsh
-fi
+[[ "$THEME" == "powerlevel10k" ]] && source ${HOME}/myinits/p10k.zsh
 
 PATH="/Users/${USER}/perl5/bin${PATH:+:${PATH}}:/usr/local/bin:${GOPATH}/bin"; export PATH;
 PERL5LIB="/Users/${USER}/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
@@ -55,13 +53,6 @@ then
 --color='hl:148,hl+:154,pointer:032,marker:010,bg+:237,gutter:008'
 --prompt='∼ --marker='✓'
 "
-#--preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
-#--bind '?:toggle-preview'
-#--bind 'ctrl-a:select-all'
-#--bind 'ctrl-y:execute-silent(echo {+} | pbcopy)'
-#--bind 'ctrl-e:execute(echo {+} | xargs -o vim)'
-#--bind 'ctrl-v:execute(code {+})'
-#"
   if [[ -e /usr/local/bin/fd || -e /usr/bin/fd ]]; then
     export FZF_DEFAULT_COMMAND="fd --hidden --follow --exclude '.git'"
   fi
