@@ -8,14 +8,10 @@
 # Source zinit & Prezto.
 #
 
-if [[ -s "${ZDOTDIR:-$HOME}/.zinit/bin/zinit.zsh" ]]; then
-  source ~/.zinit/bin/zinit.zsh
-fi
+[[ -s "${ZDOTDIR:-$HOME}/.zinit/bin/zinit.zsh" ]] && source ~/.zinit/bin/zinit.zsh
 
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-  if [[ -e "${ZDOTDIR:-$HOME}/myinits/functions" ]]; then
-    fpath=(${ZDOTDIR:-$HOME}/myinits/functions $fpath)
-  fi
+  [[ -d "${ZDOTDIR:-$HOME}/myinits/functions" ]] && fpath=(${ZDOTDIR:-$HOME}/myinits/functions $fpath)
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
   bindkey "^j" autosuggest-accept
 fi
@@ -38,19 +34,17 @@ PERL_MM_OPT="INSTALL_BASE=/Users/${USER}/perl5"; export PERL_MM_OPT;
 
 if grep zinit <<< $FPATH &> /dev/null
 then
-  zinit load zsh-interactive-cd 
-  zinit load fzf
-  zinit load fzf-z
-  zinit load z
+  [[ -d ~/.zinit/plugins/zsh-interactive-cd ]] && zinit load zsh-interactive-cd 
+  [[ -d ~/.zinit/plugins/fzf ]] && zinit load fzf
+  [[ -d ~/.zinit/plugins//fzf-z ]] && zinit load fzf-z
+  [[ -d ~/.zinit/plugins/z ]] && zinit load z
+  
 #  zinit load zsh-autosuggestions
   bindkey "ç" fzf-cd-widget
 
-  if [[ -e /usr/local/Cellar/fzf/0.21.1/shell/key-bindings.zsh ]]; then
-    source /usr/local/Cellar/fzf/0.21.1/shell/key-bindings.zsh
-  elif [[ -e /etc/zsh_completion.d/fzf-key-bindings ]]; then
-    source /etc/zsh_completion.d/fzf-key-bindings
-  fi
-  
+  [[ -e /usr/local/Cellar/fzf/0.21.1/shell/key-bindings.zsh ]] && source /usr/local/Cellar/fzf/0.21.1/shell/key-bindings.zsh
+  [[ -e /etc/zsh_completion.d/fzf-key-bindings ]] && source /etc/zsh_completion.d/fzf-key-bindings
+
   export FZF_COMPLETION_TRIGGER='**'
   export FZF_DEFAULT_OPTS="
 --layout=reverse
@@ -80,6 +74,9 @@ then
   # Ctrl-R command preview ? toggles
   export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3%:wrap "
 fi
+
+zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
+
 
 # find-in-file - usage: fif <SEARCH_TERM>
 fif() {

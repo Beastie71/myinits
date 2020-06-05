@@ -1,35 +1,29 @@
 
-if /bin/ls --help > /dev/null 2>&1 ;  then
+/bin/ls --help > /dev/null 2>&1
+if [[ $? -eq 0 ]] ;  then
+  export JOEBLOW="gnu ls at /bin/ls"
 #if [[ `type "$foobar_command_name" > /dev/null` ]]; then
   # GNU Core Utilities
   alias ls='ls --group-directories-first'
 
   if zstyle -t ':prezto:module:utility:ls' color; then
-    if [[ -s "$HOME/.dir_colors" ]]; then
-      eval "$(dircolors --sh "$HOME/.dir_colors")"
-    else
-      eval "$(dircolors --sh)"
-    fi
-
+    [[ -s "$HOME/.dir_colors" ]] && eval "$(dircolors --sh "$HOME/.dir_colors")" || eval "$(dircolors --sh)"
     alias ls="${aliases[ls]:-ls} --color=auto"
   else
     alias ls="${aliases[ls]:-ls} -F"
   fi
 elif [[ -x /usr/local/bin/gls ]]; then
+  export JOEBLOW="usign /usr/local/bin/gls"
   alias ls='/usr/local/bin/gls --group-directories-first'
 
   if zstyle -t ':prezto:module:utility:ls' color; then
-    if [[ -s "$HOME/.dir_colors" ]]; then
-      eval "$(gdircolors --sh "$HOME/.dir_colors")"
-    else
-      eval "$(gdircolors --sh)"
-    fi
-
+    [[ -s "$HOME/.dir_colors" ]] && eval "$(gdircolors --sh "$HOME/.dir_colors")" || eval "$(gdircolors --sh)"
     alias ls="${aliases[ls]:-ls} --color=auto"
   else
     alias ls="${aliases[ls]:-ls} -F"
   fi
 else
+  export "using BSD at /bin/ls"
   # BSD Core Utilities
   if zstyle -t ':prezto:module:utility:ls' color; then
     export JOEBLOW="joejoe"
@@ -46,8 +40,6 @@ else
   fi
 fi
 
-
-alias ls='ls --group-directories-first'
 alias ls="${aliases[ls]:-ls} --color=auto"
 alias ls="${aliases[ls]:-ls} -F"
 alias ls="${aliases[ls]:-ls} --color=auto"
