@@ -28,6 +28,7 @@ zstyle ':prezto:load' zfunction 'zargs' 'zmv'
 zstyle ':prezto:module:gnu-utility' prefix 'g'
 zstyle ':prezto:load' pmodule \
   'environment' \
+  'autosuggestions' \
   'terminal' \
   'editor' \
   'history' \
@@ -44,8 +45,7 @@ zstyle ':prezto:load' pmodule \
 #
 
 # Set the query found color.
-zstyle ':prezto:module:autosuggestions:color' found ''
-
+zstyle ':prezto:module:autosuggestions:color' found 'fg=1'
 #
 # Editor
 #
@@ -175,54 +175,6 @@ zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
 zstyle ':prezto:module:tmux:iterm' integrate 'yes'
 zstyle ':prezto:module:tmux:session' name 'BaseSession'
 
-if [[ `type "$foobar_command_name" > /dev/null` ]]; then
-  # GNU Core Utilities
-  alias ls='ls --group-directories-first'
-
-  if zstyle -t ':prezto:module:utility:ls' color; then
-    if [[ -s "$HOME/.dir_colors" ]]; then
-      eval "$(dircolors --sh "$HOME/.dir_colors")"
-    else
-      eval "$(dircolors --sh)"
-    fi
-
-    alias ls="${aliases[ls]:-ls} --color=auto"
-  else
-    alias ls="${aliases[ls]:-ls} -F"
-  fi
-elif [[ -x /usr/local/bin/gls ]]; then
-  alias ls='/usr/local/bin/gls --group-directories-first'
-
-  if zstyle -t ':prezto:module:utility:ls' color; then
-    if [[ -s "$HOME/.dir_colors" ]]; then
-      eval "$(gdircolors --sh "$HOME/.dir_colors")"
-    else
-      eval "$(gdircolors --sh)"
-    fi
-
-    alias ls="${aliases[ls]:-ls} --color=auto"
-  else
-    alias ls="${aliases[ls]:-ls} -F"
-  fi
-else
-  # BSD Core Utilities
-  if zstyle -t ':prezto:module:utility:ls' color; then
-    export JOEBLOW="joejoe"
-    # Define colors for BSD ls.
-    #export LSCOLORS='exfxcxdxbxGxDxabagacad'
-    export LSCOLORS='bxfxcxdxbxGxDxabagacad'
-
-    # Define colors for the completion system.
-    export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'
-
-    alias ls="${aliases[ls]:-ls} -G"
-  else
-    alias ls="${aliases[ls]:-ls} -F"
-  fi
-fi
-
-alias dv="dirs -v"
-
 ####################
 # Module Option Setopt
 ####################
@@ -241,24 +193,10 @@ if [[ "$TERM_PROGRAM" == "iTerm.app" && -e ${HOME}/myinits/iterm2_shell_integrat
   source ${HOME}/myinits/iterm2_shell_integration.zsh
 fi
 
-function sshnp() {
+if [[ -s "${ZDOTDIR:-$HOME}/myinits/aliases.zsh" ]]; then
+  source ${HOME}/myinits/aliases.zsh
+fi
 
-  if [ -n "$1" ];
-  then
-    thehost=`grep $1 ~/vde/np.list | awk '{print $1}'`
-    thename=`grep $1 ~/vde/np.list | awk '{print $2}'`
-    shift;
-    if [ -n "$thehost" ];
-    then
-      echo "Connecting to $thename"
-      ssh -o ConnectTimeout=10 -q -t -i ~/vde/Docker-NonProd.pem ec2-user@$thehost "$@"
-    else
-      echo "Host not found"
-   fi
- else
-   echo "You must specify a host."
- fi
-}
 
 function kubelsc() {
 
