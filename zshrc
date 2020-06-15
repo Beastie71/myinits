@@ -34,8 +34,8 @@ if grep zinit <<< $FPATH &> /dev/null
 then
   [[ -d ~/.zinit/plugins/zsh-interactive-cd ]] && zinit load zsh-interactive-cd 
   [[ -d ~/.zinit/plugins/fzf ]] && zinit load fzf
-  [[ -d ~/.zinit/plugins//fzf-z ]] && zinit load fzf-z
-  [[ -d ~/.zinit/plugins/z ]] && zinit load z
+  # [[ -d ~/.zinit/plugins//fzf-z ]] && zinit load fzf-z
+  # [[ -d ~/.zinit/plugins/z ]] && zinit load z
   
 #  zinit load zsh-autosuggestions
   bindkey "ç" fzf-cd-widget
@@ -45,14 +45,13 @@ then
 
   export FZF_COMPLETION_TRIGGER='**'
   export FZF_DEFAULT_OPTS="
---layout=reverse
---info=inline
---height=40%
---multi
---preview-window=:hidden
---color='hl:148,hl+:154,pointer:032,marker:010,bg+:237,gutter:008'
---prompt='∼ --marker='✓'
-"
+ --layout=reverse
+ --info=inline
+ --height=40%
+ --multi
+ --color='hl:148,hl+:154,pointer:032,marker:010,bg+:237,gutter:008'
+ --prompt='∼ --marker='✓'
+ "
   if [[ -e /usr/local/bin/fd || -e /usr/bin/fd ]]; then
     export FZF_DEFAULT_COMMAND="fd --hidden --follow --exclude '.git'"
   fi
@@ -63,11 +62,11 @@ then
   export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND --type d"
   export _ZL_HYPHEN=1
   # Ctrl-R command preview ? toggles
-  export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3%:wrap "
+  export FZF_CTRL_R_OPTS="--preview --sort 'echo {}' --preview-window down:3%:wrap "
+  export FZF_CTRL_R_OPTS="--tac --tiebreak=index --info=inline"
 fi
 
 zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
-
 
 # find-in-file - usage: fif <SEARCH_TERM>
 fif() {
@@ -81,3 +80,27 @@ fif() {
     grep --ignore-case | fzf $FZF_PREVIEW_WINDOW 
   fi
 }
+
+fzf-history-widget () {
+
+if grep zinit <<< $FPATH &> /dev/null
+then
+	local selected num
+	setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2> /dev/null
+	#selected=($(fc -rl 1 | perl -ne 'print if !$seen{($_ =~ s/^\s*[0-9]+\s+//r)}++' | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} $FZF_DEFAULT_OPTS -n2..,.. --tiebreak=end --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)))
+  selected=($(fc -l 1 | perl -ne 'print if !$seen{($_ =~ s/^\s*[0-9]+\s+//r)}++' | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} -n2..,.. --tiebreak=index --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)))
+  local ret=$?
+	if [ -n "$selected" ]
+	then
+		num=$selected[1]
+		if [ -n "$num" ]
+		then
+			zle vi-fetch-history -n $num
+		fi
+	fi
+	zle reset-prompt
+	return $ret
+fi
+
+}
+
