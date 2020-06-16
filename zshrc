@@ -74,10 +74,10 @@ fif() {
     echo "Need a string to search for!";
     return 1;
   fi
-  if [[ -e /usr/local/bin/rg ]]; then
+  if [[ -e /usr/local/bin/rg || -e /usr/bin/rg ]]; then
     rg --files-with-matches --no-messages "$1" | fzf $FZF_PREVIEW_WINDOW --preview "rg --ignore-case --pretty --context 10 '$1' {}"
   else
-    grep --ignore-case | fzf $FZF_PREVIEW_WINDOW 
+    grep --ignore-case -l $1 | fzf $FZF_PREVIEW_WINDOW 
   fi
 }
 
