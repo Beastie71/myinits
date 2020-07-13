@@ -34,6 +34,7 @@ if grep zinit <<< $FPATH &> /dev/null
 then
   [[ -d ~/.zinit/plugins/zsh-interactive-cd ]] && zinit load zsh-interactive-cd 
   [[ -d ~/.zinit/plugins/fzf ]] && zinit load fzf
+
   # [[ -d ~/.zinit/plugins//fzf-z ]] && zinit load fzf-z
   # [[ -d ~/.zinit/plugins/z ]] && zinit load z
   
@@ -64,6 +65,14 @@ then
   # Ctrl-R command preview ? toggles
   export FZF_CTRL_R_OPTS="--preview --sort 'echo {}' --preview-window down:3%:wrap "
   export FZF_CTRL_R_OPTS="--tac --tiebreak=index --info=inline"
+  if [[ -e ~/.zinit/plugins/zsh-histdb/sqlite-history.zsh ]]; then
+    source ~/.zinit/plugins/zsh-histdb/sqlite-history.zsh
+    autoload -Uz add-zsh-hook
+    #add-zsh-hook precmd histdb-update-outcome
+    source ~/.zinit/plugins/zsh-histdb/histdb-interactive.zsh
+    export MRLYES=yes
+  fi
+
 fi
 
 zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
