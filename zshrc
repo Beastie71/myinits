@@ -70,7 +70,7 @@ then
     autoload -Uz add-zsh-hook
     #add-zsh-hook precmd histdb-update-outcome
     source ~/.zinit/plugins/zsh-histdb/histdb-interactive.zsh
-    export MRLYES=yes
+    bindkey '^r' _histdb-mysearch
   fi
 
 fi
@@ -98,6 +98,8 @@ then
 	setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2> /dev/null
 	#selected=($(fc -rl 1 | perl -ne 'print if !$seen{($_ =~ s/^\s*[0-9]+\s+//r)}++' | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} $FZF_DEFAULT_OPTS -n2..,.. --tiebreak=end --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)))
   selected=($(fc -l 1 | perl -ne 'print if !$seen{($_ =~ s/^\s*[0-9]+\s+//r)}++' | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} -n2..,.. --tiebreak=index --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)))
+  #selected=_myhistdb_isearch_query
+  #selected=( $(echo ${selected} | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} -n2..,.. --tiebreak=index --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)))
   local ret=$?
 	if [ -n "$selected" ]
 	then
@@ -113,3 +115,92 @@ fi
 
 }
 
+_histdb-mysearch () {
+
+  local old_buffer=${BUFFER}
+  local old_cursor=${CURSOR}
+	local selected num commandid
+  setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2> /dev/null
+
+  local new_query="$BUFFER $HISTDB_ISEARCH_THIS_HOST $HISTDB_ISEARCH_THIS_DIR"
+  if [[ $new_query == $HISTDB_ISEARCH_LAST_QUERY ]] && [[ $HISTDB_ISEARCH_N == $HISTDB_ISEARCH_LAST_N ]]; then
+      return
+  elif [[ $new_query != $HISTDB_ISEARCH_LAST_QUERY ]]; then
+      HISTDB_ISEARCH_N=0
+  fi
+
+  HISTDB_ISEARCH_LAST_QUERY=$new_query
+  HISTDB_ISEARCH_LAST_N=HISTDB_ISEARCH_N
+
+
+  local maxmin="min"
+  local ascdesc="asc"
+
+  if [[ $HISTDB_ISEARCH_THIS_DIR == 1 ]]; then
+      local where_dir="and places.dir like '$(sql_escape $PWD)%'"
+  else
+      local where_dir=""
+  fi
+
+  if [[ $HISTDB_ISEARCH_THIS_HOST == 1 ]]; then
+      local where_host="and places.host = '$(sql_escape $HOST)'"
+  else
+      local where_host=""
+  fi
+
+  if [[ $HISTDB_ISEARCH_THIS_HOST == 1 ]]; then
+      local where_host="and places.host = '$(sql_escape $HOST)'"
+  else
+      local where_host=""
+  fi
+
+  if [[ -v $HISTDB_ISEARCH_INCLUDE_ERRORS ]]; then
+      local where_error=""
+  else
+      local where_error="and history.exit_status = 0"
+  fi
+
+  local query="select 
+commands.argv,
+commands.id,
+places.dir,
+places.host,
+datetime(max(history.start_time), 'unixepoch', 'localtime')
+from history left join commands
+on history.command_id = commands.rowid
+left join places
+on history.place_id = places.rowid
+where commands.argv glob '*$(sql_escape ${BUFFER})*'
+${where_host}
+${where_dir}
+${where_error}
+group by commands.argv, places.dir, places.host
+order by ${maxmin}(history.start_time) ${ascdesc}"
+  local result=$(_histdb_query -separator $'::' "$query")
+  selected=($( echo ${result} | awk -F:: '{print $2" "$1}' | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} -n2..,.. --tiebreak=index --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)))
+  local ret=$?
+	if [ -n "$selected" ]
+	then
+		num=${selected[1]}
+		if [ -n "$num" ]
+		then
+      local query="select argv from commands where id=${num}"
+      BUFFER=$(_histdb_query -separator $'\n' "$query")
+      zle vi-end-of-line
+		fi
+	fi
+	zle reset-prompt
+	return $ret
+  
+}
+
+zle -N _histdb-mysearch _histdb-mysearch
+
+_histdb-isearch-toggle-errors () {
+    if [[ $HISTDB_ISEARCH_INCLUDE_ERRORS == 1 ]]; then
+        HISTDB_ISEARCH_INCLUDE_ERRORS=0
+    else
+        HISTDB_ISEARCH_INCLUDE_ERRORS=1
+    fi
+}
+bindkey -M histdb-isearch '^[e' _histdb-isearch-toggle-errors
