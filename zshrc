@@ -71,6 +71,7 @@ then
     #add-zsh-hook precmd histdb-update-outcome
     source ~/.zinit/plugins/zsh-histdb/histdb-interactive.zsh
     bindkey '^r' _histdb-mysearch
+    bindkey -M histdb-isearch '^[e' _histdb-isearch-toggle-errors
   fi
 
 fi
@@ -203,4 +204,3 @@ _histdb-isearch-toggle-errors () {
         HISTDB_ISEARCH_INCLUDE_ERRORS=1
     fi
 }
-bindkey -M histdb-isearch '^[e' _histdb-isearch-toggle-errors
