@@ -165,7 +165,7 @@ NORMAL 00
 # normal file
 FILE 00
 # directory
-DIR 44;33
+DIR 40;33
 # 777 directory
 OTHER_WRITABLE 34;40
 # symbolic link
@@ -189,13 +189,13 @@ ORPHAN  05;37;41
 MISSING 05;37;41
 
 # files with execute permission
-EXEC 01;31  # Unix
-.cmd 01;31  # Win
-.exe 01;31  # Win
-.com 01;31  # Win
-.bat 01;31  # Win
-.reg 01;31  # Win
-.app 01;31  # OSX
+EXEC 01;32  # Unix
+.cmd 01;32  # Win
+.exe 01;32  # Win
+.com 01;32  # Win
+.bat 01;32  # Win
+.reg 01;32  # Win
+.app 01;32  # OSX
 
 #############################################################################
 ### By extension
@@ -207,156 +207,157 @@ EXEC 01;31  # Unix
 ### Text formats
 
 # Text that we can edit with a regular editor
-.txt 32
-.org 32
-.md 32
-.mkd 32
+.txt 47;30
+.org 47;30
+.md 47;30
+.mkd 47;30
 
 # Source text
-.h 32
-.hpp 32
-.c 32
-.C 32
-.cc 32
-.cpp 32
-.cxx 32
-.objc 32
-.cl 32
-.sh 32
-.bash 32
-.csh 32
-.zsh 32
-.el 32
-.vim 32
-.java 32
-.pl 32
-.pm 32
-.py 32
-.rb 32
-.hs 32
-.php 32
-.htm 32
-.html 32
-.shtml 32
-.erb 32
-.haml 32
-.xml 32
-.rdf 32
-.css 32
-.sass 32
-.scss 32
-.less 32
-.js 32
-.coffee 32
-.man 32
-.0 32
-.1 32
-.2 32
-.3 32
-.4 32
-.5 32
-.6 32
-.7 32
-.8 32
-.9 32
-.l 32
-.n 32
-.p 32
-.pod 32
-.tex 32
-.go 32
-.sql 32
-.csv 32
-.sv 32
-.svh 32
-.v 32
-.vh 32
-.vhd 32
+.h 37
+.hpp 31
+.c 37
+.C 37
+.cc 37
+.cpp 37
+.cxx 31
+.objc 31
+.cl 31
+.sh 37
+.bash 37
+.csh 37
+.zsh 37
+.el 31
+.vim 37
+.java 31
+.pl 37
+.pm 31
+.py 37
+.rb 37
+.hs 31
+.php 31
+.htm 47;30
+.html 47;30
+.shtml 37
+.erb 31
+.haml 31
+.xml 47;30
+.rdf 31
+.css 47;30
+.sass 31
+.scss 31
+.less 31
+.js 47;30
+.coffee 31
+.man 31
+.0 31
+.1 31
+.2 31
+.3 31
+.4 31
+.5 31
+.6 31
+.7 31
+.8 31
+.9 31
+.l 31
+.n 31
+.p 31
+.pod 31
+.tex 31
+.go 31
+.sql 31
+.csv 47;30
+.sv 31
+.svh 31
+.v 31
+.vh 31
+.vhd 31
 
 ### Multimedia formats
 
 # Image
-.bmp 33
-.cgm 33
-.dl 33
-.dvi 33
-.emf 33
-.eps 33
-.gif 33
-.jpeg 33
-.jpg 33
-.JPG 33
-.mng 33
-.pbm 33
-.pcx 33
-.pdf 33
-.pgm 33
-.png 33
-.PNG 33
-.ppm 33
-.pps 33
-.ppsx 33
-.ps 33
-.svg 33
-.svgz 33
-.tga 33
-.tif 33
-.tiff 33
-.xbm 33
-.xcf 33
-.xpm 33
-.xwd 33
-.xwd 33
-.yuv 33
-.nef 33 # Nikon RAW format
-.NEF 33
+.bmp 46;31
+.cgm 46;31
+.dl 46;31
+.dvi 46;31
+.emf 46;31
+.eps 46;31
+.gif 46;31
+.jpeg 46;31
+.jpg 46;31
+.JPG 46;31
+.mng 46;31
+.pbm 46;31
+.pcx 46;31
+.pdf 46;31
+.pgm 46;31
+.png 46;31
+.PNG 46;31
+.ppm 46;31
+.pps 46;31
+.ppsx 46;31
+.ps 46;31
+.svg 46;31
+.svgz 46;31
+.tga 46;31
+.tif 46;31
+.tiff 46;31
+.webp 46;31
+.xbm 46;31
+.xcf 46;31
+.xpm 46;31
+.xwd 46;31
+.xwd 46;31
+.yuv 46;31
+.nef 46;31 # Nikon RAW format
+.NEF 46;31
 
 # Audio
-.aac 33
-.au  33
-.flac 33
-.m4a 33
-.mid 33
-.midi 33
-.mka 33
-.mp3 33
-.mpa 33
-.mpeg 33
-.mpg 33
-.ogg  33
-.opus 33
-.ra 33
-.wav 33
+.aac 46;30
+.au  46;30
+.flac 46;30
+.m4a 46;30
+.mid 46;30
+.midi 46;30
+.mka 46;30
+.mp3 46;30
+.mpa 46;30
+.mpeg 46;30
+.mpg 46;30
+.ogg  46;30
+.opus 46;30
+.ra 46;30
+.wav 46;30
 
 # Video
-.anx 33
-.asf 33
-.avi 33
-.axv 33
-.flc 33
-.fli 33
-.flv 33
-.gl 33
-.m2v 33
-.m4v 33
-.mkv 33
-.mov 33
-.MOV 33
-.mp4 33
-.mp4v 33
-.mpeg 33
-.mpg 33
-.nuv 33
-.ogm 33
-.ogv 33
-.ogx 33
-.qt 33
-.rm 33
-.rmvb 33
-.swf 33
-.vob 33
-.webm 33
-.wmv 33
+.anx 46;34
+.asf 46;34
+.avi 46;34
+.axv 46;34
+.flc 46;34
+.fli 46;34
+.flv 46;34
+.gl 46;34
+.m2v 46;34
+.m4v 46;34
+.mkv 46;34
+.mov 46;34
+.MOV 46;34
+.mp4 46;34
+.mp4v 46;34
+.mpeg 46;34
+.mpg 46;34
+.nuv 46;34
+.ogm 46;34
+.ogv 46;34
+.ogx 46;34
+.qt 46;34
+.rm 46;34
+.rmvb 46;34
+.swf 46;34
+.vob 46;34
+.webm 46;34
+.wmv 46;34
 
 ### Misc
 
@@ -380,33 +381,33 @@ EXEC 01;31  # Unix
 .psd 31
 
 # Archives, compressed
-.7z   1;35
-.apk  1;35
-.arj  1;35
-.bin  1;35
-.bz   1;35
-.bz2  1;35
-.cab  1;35  # Win
-.deb  1;35
-.dmg  1;35  # OSX
-.gem  1;35
-.gz   1;35
-.iso  1;35
-.jar  1;35
-.msi  1;35  # Win
-.rar  1;35
-.rpm  1;35
-.tar  1;35
-.tbz  1;35
-.tbz2 1;35
-.tgz  1;35
-.tx   1;35
-.war  1;35
-.xpi  1;35
-.xz   1;35
-.z    1;35
-.Z    1;35
-.zip  1;35
+.7z   43;30
+.apk  43;30
+.arj  43;30
+.bin  43;30
+.bz   43;30
+.bz2  43;30
+.cab  43;30  # Win
+.deb  43;30
+.dmg  43;30  # OSX
+.gem  43;30
+.gz   43;30
+.iso  43;30
+.jar  43;30
+.msi  43;30  # Win
+.rar  43;30
+.rpm  43;30
+.tar  43;30
+.tbz  43;30
+.tbz2 43;30
+.tgz  43;30
+.tx   43;30
+.war  43;30
+.xpi  43;30
+.xz   43;30
+.z    43;30
+.Z    43;30
+.zip  43;30
 
 # For testing
 .ANSI-30-black 30
@@ -432,9 +433,9 @@ EXEC 01;31  # Unix
 # Unimportant text files
 # For universal scheme, use brightgreen 01;32
 # For optimal on light bg (but too prominent on dark bg), use white 01;34
-.log 01;32
-*~ 01;32
-*# 01;32
+.log 01;31
+*~ 01;31
+*# 01;31
 #.log 01;34
 #*~ 01;34
 #*# 01;34

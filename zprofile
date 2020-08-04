@@ -73,5 +73,5 @@ if [[ ! -d "$TMPDIR" ]]; then
 fi
 
 TMPPREFIX="${TMPDIR%/}/zsh"
-export GOPATH=/Users/${USER}/Documents/workspace/go
-export GOROOT=/usr/local/opt/go/libexec
+export GOPATH=${HOME}/Documents/workspace/go
+export GOBIN=${GOPATH}/bin
