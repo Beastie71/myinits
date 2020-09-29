@@ -73,5 +73,11 @@ if [[ ! -d "$TMPDIR" ]]; then
 fi
 
 TMPPREFIX="${TMPDIR%/}/zsh"
-export GOPATH=${HOME}/Documents/workspace/go
-export GOBIN=${GOPATH}/bin
+if [[ -e "${HOME}/Documents/workspace/go" ]]; then
+  GOPATH=$GOPATH:"${HOME}/Documents/workspace/go"
+  GOBIN=${GOBIN}:"${HOME}/Documents/workspace/go/bin"
+fi
+if [[ -e "${HOME}/Documents/workspace/class" ]]; then
+  GOPATH=$GOPATH:"${HOME}/Documents/workspace/class"
+  GOBIN=${GOBIN}:"${HOME}/Documents/workspace/class/bin"
+fi

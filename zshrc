@@ -74,6 +74,8 @@ then
     bindkey -M histdb-isearch '^[e' _histdb-isearch-toggle-errors
   fi
 
+  [[ -e "${HOME}/myinits/kubectl_completion" ]] && source "${HOME}/myinits/kubectl_completion"
+
 fi
 
 zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
