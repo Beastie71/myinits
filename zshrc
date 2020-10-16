@@ -41,7 +41,7 @@ then
 #  zinit load zsh-autosuggestions
   bindkey "ç" fzf-cd-widget
 
-  [[ -e /usr/local/Cellar/fzf/0.22.0/shell/key-bindings.zsh ]] && source /usr/local/Cellar/fzf/0.22.0/shell/key-bindings.zsh
+  [[ -e /usr/local/Cellar/fzf/0.23.0/shell/key-bindings.zsh ]] && source /usr/local/Cellar/fzf/0.23.0/shell/key-bindings.zsh
   [[ -e /etc/zsh_completion.d/fzf-key-bindings ]] && source /etc/zsh_completion.d/fzf-key-bindings
 
   export FZF_COMPLETION_TRIGGER='**'
