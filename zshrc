@@ -161,11 +161,12 @@ _histdb-mysearch () {
       local where_host=""
   fi
 
-  if [[ -v $HISTDB_ISEARCH_INCLUDE_ERRORS ]]; then
-      local where_error=""
-  else
-      local where_error="and history.exit_status = 0"
-  fi
+  #if [[ -v $HISTDB_ISEARCH_INCLUDE_ERRORS ]]; then
+  #    local where_error=""
+  #else
+  #    local where_error="and history.exit_status = 0"
+  #fi
+  local where_error=""
 
   local query="select 
 commands.argv,
