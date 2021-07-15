@@ -74,7 +74,7 @@ then
     autoload -Uz add-zsh-hook
     #add-zsh-hook precmd histdb-update-outcome
     source ~/.zinit/plugins/zsh-histdb/histdb-interactive.zsh
-    bindkey '^r' _histdb-mysearch
+#    bindkey '^r' _histdb-isearch
     bindkey -M histdb-isearch '^[e' _histdb-isearch-toggle-errors
   fi
 
