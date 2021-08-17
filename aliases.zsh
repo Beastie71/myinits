@@ -46,6 +46,7 @@ alias ls="${aliases[ls]:-ls} --color=auto"
 alias ls="${aliases[ls]:-ls} -F"
 alias ls="${aliases[ls]:-ls} -G"
 alias ls="${aliases[ls]:-ls} -F"
+alias k="kubectl"
 alias dv="dirs -v"
 alias zz="z -c" # matches directories only under $PWD
 alias zi="z -I"  # use fzf to select in multiple matches
