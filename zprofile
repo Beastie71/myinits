@@ -76,6 +76,9 @@ TMPPREFIX="${TMPDIR%/}/zsh"
 if [[ -e "${HOME}/Documents/workspace/go" ]]; then
   GOPATH=$GOPATH:"${HOME}/Documents/workspace/go"
   GOBIN=${GOBIN}:"${HOME}/Documents/workspace/go/bin"
+elif [[ -e "$HOME/go" ]]; then
+  GOPATH=${HOME}/go
+  GOBIN=${HOME}/go/bin
 fi
 if [[ -e "${HOME}/Documents/workspace/class" ]]; then
   GOPATH=$GOPATH:"${HOME}/Documents/workspace/class"
