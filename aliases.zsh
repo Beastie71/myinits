@@ -1,11 +1,8 @@
 
+report="${HOME}/tmp/report"
 /bin/ls --help > /dev/null 2>&1
 if [[ $? -eq 0 ]] ;  then
   export JOEBLOW="gnu ls at /bin/ls"
-#if [[ `type "$foobar_command_name" > /dev/null` ]]; then
-  # GNU Core Utilities
-  alias ls='ls --group-directories-first'
-
   if zstyle -t ':prezto:module:utility:ls' color; then
     [[ -s "$HOME/.dir_colors" ]] && eval "$(dircolors --sh "$HOME/.dir_colors")" || eval "$(dircolors --sh)"
     alias ls="${aliases[ls]:-ls} --color=auto"
@@ -14,8 +11,7 @@ if [[ $? -eq 0 ]] ;  then
   fi
 elif [[ -x /usr/local/bin/gls ]]; then
   export JOEBLOW="usign /usr/local/bin/gls"
-  alias ls='/usr/local/bin/gls --group-directories-first'
-
+  alias ls='/usr/local/bin/gls'
   if zstyle -t ':prezto:module:utility:ls' color; then
     [[ -s "$HOME/.dir_colors" ]] && eval "$(gdircolors --sh "$HOME/.dir_colors")" || eval "$(gdircolors --sh)"
     alias ls="${aliases[ls]:-ls} --color=auto"
@@ -40,12 +36,13 @@ else
   fi
 fi
 
-alias ls="${aliases[ls]:-ls} --color=auto"
-alias ls="${aliases[ls]:-ls} -F"
-alias ls="${aliases[ls]:-ls} --color=auto"
-alias ls="${aliases[ls]:-ls} -F"
-alias ls="${aliases[ls]:-ls} -G"
-alias ls="${aliases[ls]:-ls} -F"
+if [[ ! ${aliases[ls]} = *"--color=auto"* ]]; then 
+    alias ls="${aliases[ls]:-ls} --color=auto"
+fi
+if [[ ! ${aliases[ls]} = *" -F"* ]]; then 
+    alias ls="${aliases[ls]:-ls} -F"
+fi
+alias lsd="${aliases[ls]:-ls} --group-directories-first"
 alias k="kubectl"
 alias dv="dirs -v"
 alias zz="z -c" # matches directories only under $PWD
