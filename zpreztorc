@@ -182,11 +182,11 @@ zstyle ':prezto:module:tmux:session' name 'BaseSession'
 setopt pushdminus
 setopt PUSHD_IGNORE_DUPS
 setopt AUTO_PARAM_SLASH
-setopt AUTO_PUSHD
 setopt INTERACTIVE_COMMENTS
 setopt HIST_IGNORE_ALL_DUPS
 setopt INC_APPEND_HISTORY
 
+unsetopt AUTO_PUSHD
 unsetopt sharehistory
 
 if [[ "$TERM_PROGRAM" == "iTerm.app" && -e ${HOME}/myinits/iterm2_shell_integration.zsh ]]; then
