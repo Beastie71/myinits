@@ -8,7 +8,7 @@
 # Source zinit & Prezto.
 #
 
-[[ -s "${ZDOTDIR:-$HOME}/.zinit/bin/zinit.zsh" ]] && source ~/.zinit/bin/zinit.zsh
+#[[ -s "${ZDOTDIR:-$HOME}/.zinit/bin/zinit.zsh" ]] && source ~/.zinit/bin/zinit.zsh
 
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   [[ -d "${ZDOTDIR:-$HOME}/myinits/functions" ]] && fpath=(${ZDOTDIR:-$HOME}/myinits/functions $fpath)
@@ -35,9 +35,6 @@ then
   [[ -d ~/.zinit/plugins/zsh-interactive-cd ]] && zinit load zsh-interactive-cd 
   [[ -d ~/.zinit/plugins/fzf ]] && zinit load fzf
 
-  # [[ -d ~/.zinit/plugins//fzf-z ]] && zinit load fzf-z
-  # [[ -d ~/.zinit/plugins/z ]] && zinit load z
-  
 #  zinit load zsh-autosuggestions
   bindkey "ç" fzf-cd-widget
   cellarfzf="/usr/local/Cellar/fzf"
@@ -103,10 +100,7 @@ if grep zinit <<< $FPATH &> /dev/null
 then
 	local selected num
 	setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2> /dev/null
-	#selected=($(fc -rl 1 | perl -ne 'print if !$seen{($_ =~ s/^\s*[0-9]+\s+//r)}++' | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} $FZF_DEFAULT_OPTS -n2..,.. --tiebreak=end --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)))
   selected=($(fc -l 1 | perl -ne 'print if !$seen{($_ =~ s/^\s*[0-9]+\s+//r)}++' | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} -n2..,.. --tiebreak=index --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)))
-  #selected=_myhistdb_isearch_query
-  #selected=( $(echo ${selected} | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} -n2..,.. --tiebreak=index --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)))
   local ret=$?
 	if [ -n "$selected" ]
 	then
@@ -161,11 +155,6 @@ _histdb-mysearch () {
       local where_host=""
   fi
 
-  #if [[ -v $HISTDB_ISEARCH_INCLUDE_ERRORS ]]; then
-  #    local where_error=""
-  #else
-  #    local where_error="and history.exit_status = 0"
-  #fi
   local where_error=""
 
   local query="select 
