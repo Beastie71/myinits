@@ -187,6 +187,7 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt INC_APPEND_HISTORY
 
 unsetopt AUTO_PUSHD
+unsetopt autopushd
 unsetopt sharehistory
 
 if [[ "$TERM_PROGRAM" == "iTerm.app" && -e ${HOME}/myinits/iterm2_shell_integration.zsh ]]; then
