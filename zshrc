@@ -1,202 +1,236 @@
+# Start configuration added by Zim install {{{
 #
-# Executes commands at the start of an interactive session.
-#
-# Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
+# User configuration sourced by interactive shells
 #
 
-# Source zinit & Prezto.
+# -----------------
+# Zsh configuration
+# -----------------
+
+#
+# History
 #
 
-#[[ -s "${ZDOTDIR:-$HOME}/.zinit/bin/zinit.zsh" ]] && source ~/.zinit/bin/zinit.zsh
+# Remove older command from the history if a duplicate is to be added.
+#
+OKMARK="✔"
+HOURGLASS=""
 
-if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-  [[ -d "${ZDOTDIR:-$HOME}/myinits/functions" ]] && fpath=(${ZDOTDIR:-$HOME}/myinits/functions $fpath)
-  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
-  bindkey "^j" autosuggest-accept
-fi
+setopt HIST_IGNORE_ALL_DUPS
 
-# Customize to your needs...
+#
+# Input/output
+#
 
-USER=`echo $USERNAME`
-THEME=`prompt -c | grep -v Curr | sed 's/ //g'`
-[[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && source "${HOME}/.iterm2_shell_integration.zsh"
+# Set editor default keymap to emacs (`-e`) or vi (`-v`)
+bindkey -e
 
-[[ "$THEME" == "powerlevel10k" ]] && source ${HOME}/myinits/p10k.zsh
+# Prompt for spelling correction of commands.
+#setopt CORRECT
 
-PATH="/Users/${USER}/perl5/bin${PATH:+:${PATH}}:/usr/local/bin:${GOPATH}/bin"; export PATH;
-PERL5LIB="/Users/${USER}/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="/Users/${USER}/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"/Users/${USER}/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/Users/${USER}/perl5"; export PERL_MM_OPT;
+# Customize spelling correction prompt.
+#SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
 
-if grep zinit <<< $FPATH &> /dev/null
-then
-  [[ -d ~/.zinit/plugins/zsh-interactive-cd ]] && zinit load zsh-interactive-cd 
-  [[ -d ~/.zinit/plugins/fzf ]] && zinit load fzf
+# Remove path separator from WORDCHARS.
+WORDCHARS=${WORDCHARS//[\/]}
 
-#  zinit load zsh-autosuggestions
-  bindkey "ç" fzf-cd-widget
-  cellarfzf="/usr/local/Cellar/fzf"
+# -----------------
+# Zim configuration
+# -----------------
 
-  if [[ -d ${cellarfzf} ]]; then
-      dirfzf=`ls -Ft ${cellarfzf} | egrep "/$" | head -1`
-      [[ /usr/local/Cellar/fzf/${dirfzf}shell/key-bindings.zsh ]] && source /usr/local/Cellar/fzf/${dirfzf}shell/key-bindings.zsh
-  fi
-  [[ -e /etc/zsh_completion.d/fzf-key-bindings ]] && source /etc/zsh_completion.d/fzf-key-bindings
+# Use degit instead of git as the default tool to install and update modules.
+zstyle ':zim:zmodule' use 'degit'
 
-  export FZF_COMPLETION_TRIGGER='**'
-  export FZF_DEFAULT_OPTS="
- --layout=reverse
- --info=inline
- --height=40%
- --multi
- --color='hl:148,hl+:154,pointer:032,marker:010,bg+:237,gutter:008'
- --prompt='∼ --marker='✓'
- "
-  if [[ -e /usr/local/bin/fd || -e /usr/bin/fd ]]; then
-    export FZF_DEFAULT_COMMAND="fd --hidden --follow --exclude '.git'"
-  fi
-  # CTRL-T's command
-  #export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
-  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-  # ALT-C's command
-  export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND --type d"
-  export _ZL_HYPHEN=1
-  # Ctrl-R command preview ? toggles
-  export FZF_CTRL_R_OPTS="--preview --sort 'echo {}' --preview-window down:3%:wrap "
-  export FZF_CTRL_R_OPTS="--tac --tiebreak=index --info=inline"
-  if [[ -e ~/.zinit/plugins/zsh-histdb/sqlite-history.zsh ]]; then
-    source ~/.zinit/plugins/zsh-histdb/sqlite-history.zsh
-    autoload -Uz add-zsh-hook
-    #add-zsh-hook precmd histdb-update-outcome
-    source ~/.zinit/plugins/zsh-histdb/histdb-interactive.zsh
-#    bindkey '^r' _histdb-isearch
-    bindkey -M histdb-isearch '^[e' _histdb-isearch-toggle-errors
-  fi
+# --------------------
+# Module configuration
+# --------------------
 
-  [[ -e "${HOME}/myinits/kubectl_completion" ]] && source "${HOME}/myinits/kubectl_completion"
+#
+# completion
+#
 
-fi
+# Set a custom path for the completion dump file.
+# If none is provided, the default ${ZDOTDIR:-${HOME}}/.zcompdump is used.
+zstyle ':zim:completion' dumpfile "${ZDOTDIR:-${HOME}}/.zcompdump-${ZSH_VERSION}"
 
-zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
+#
+# git
+#
 
-# find-in-file - usage: fif <SEARCH_TERM>
-fif() {
-  if [ ! "$#" -gt 0 ]; then
-    echo "Need a string to search for!";
-    return 1;
-  fi
-  if [[ -e /usr/local/bin/rg || -e /usr/bin/rg ]]; then
-    rg --files-with-matches --no-messages "$1" | fzf $FZF_PREVIEW_WINDOW --preview "rg --ignore-case --pretty --context 10 '$1' {}"
+# Set a custom prefix for the generated aliases. The default prefix is 'G'.
+#zstyle ':zim:git' aliases-prefix 'g'
+
+#
+# input
+#
+
+# Append `../` to your input for each `.` you type after an initial `..`
+#zstyle ':zim:input' double-dot-expand yes
+
+#
+# termtitle
+#
+
+# Set a custom terminal title format using prompt expansion escape sequences.
+# See http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
+# If none is provided, the default '%n@%m: %~' is used.
+#zstyle ':zim:termtitle' format '%1~'
+
+#
+# zsh-autosuggestions
+#
+
+# Disable automatic widget re-binding on each precmd. This can be set when
+# zsh-users/zsh-autosuggestions is the last module in your ~/.zimrc.
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+
+# Customize the style that the suggestions are shown with.
+# See https://github.com/zsh-users/zsh-autosuggestions/blob/master/README.md#suggestion-highlight-style
+#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=242'
+
+#
+# zsh-syntax-highlighting
+#
+
+# Set what highlighters will be used.
+# See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+
+# Customize the main highlighter styles.
+# See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters/main.md#how-to-tweak-it
+#typeset -A ZSH_HIGHLIGHT_STYLES
+#ZSH_HIGHLIGHT_STYLES[comment]='fg=242'
+
+# ------------------
+# Initialize modules
+# ------------------
+
+ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim
+if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
+  # Download zimfw script if missing.
+  if (( ${+commands[curl]} )); then
+    curl -fsSL --create-dirs -o ${ZIM_HOME}/zimfw.zsh https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
   else
-    grep --ignore-case -l $1 | fzf $FZF_PREVIEW_WINDOW 
+    mkdir -p ${ZIM_HOME} && wget -nv -O ${ZIM_HOME}/zimfw.zsh https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
   fi
+fi
+if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZDOTDIR:-${HOME}}/.zimrc ]]; then
+  # Install missing modules, and update ${ZIM_HOME}/init.zsh if missing or outdated.
+  source ${ZIM_HOME}/zimfw.zsh init -q
+fi
+source ${ZIM_HOME}/init.zsh
+
+# ------------------------------
+# Post-init module configuration
+# ------------------------------
+
+#
+# zsh-history-substring-search
+#
+
+# Bind ^[[A/^[[B manually so up/down works both before and after zle-line-init
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# Bind up and down keys
+zmodload -F zsh/terminfo +p:terminfo
+if [[ -n ${terminfo[kcuu1]} && -n ${terminfo[kcud1]} ]]; then
+  bindkey ${terminfo[kcuu1]} history-substring-search-up
+  bindkey ${terminfo[kcud1]} history-substring-search-down
+fi
+
+bindkey '^P' history-substring-search-up
+bindkey '^N' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+# }}} End configuration added by Zim install
+
+autoload -Uz compinit; compinit; _comp_options+=(globdots);
+autoload -U colors && colors
+
+if (( ${+functions[duration-info-preexec]} && \
+	    ${+functions[duration-info-precmd]} )); then
+  #zstyle ':zim:duration-info' format ' %B%F{yellow}'${HOURGLASS}'%d%f%b'
+  zstyle ':zim:duration-info' format "%{$bg[blue]$fg[white]%}"'%B'${HOURGLASS}'%d %f%b'
+    add-zsh-hook preexec duration-info-preexec
+      add-zsh-hook precmd duration-info-precmd
+fi
+export YSU_MODE=ALL
+export PATH=${PATH}:/home/michaell/.cargo/bin
+
+TIME="%{$bg[black]$fg[white]%}%*%{$reset_color%}"
+USERINFO="%{$fg[yellow]%}${USERNAME}@${HOST}%{$reset_color%}"
+ERRORINFO="%{$bg[black]$fg[red]%}!!%?!!%{$reset_color%}"
+#
+#PS1='${SSH_TTY:+"%F{9}%n%F{7}@%F{3}%m "}%B%F{4}$(prompt-pwd)%b%(!. %B%F{1}#%b.)$(_prompt_sorin_vimode)%f '
+RPS1='${VIRTUAL_ENV:+"%F{3}(${VIRTUAL_ENV:t})"}%(?:: ${ERRORINFO} )${VIM:+" %B%F{6}V%b"}${(e)git_info[status]}%f ${duration_info}${TIME}'
+SPROMPT='zsh: correct %F{1}%R%f to %F{2}%r%f [nyae]? '
+
+PS1='${USERINFO} %B%F{4}$(prompt-pwd)%b%(!. %B%F{1}#%b.)$(_prompt_sorin_vimode)%f '
+#PS1='${USERNAME}@${HOST}%{$reset_color%} %B%F{4}$(prompt-pwd)%b%(!. %B%F{1}#%b.)$(_prompt_sorin_vimode)%f '
+#PS1="%F{2}${USERNAME}@%F{1}${HOST}:%B%F{4}$(prompt-pwd)%b%(!. %B%F{1}#%b.)$(_prompt_sorin_vimode)%f "
+#RPS1="| ${duration_info}%f"
+#
+
+# shellcheck disable=SC2034,SC2153,SC2086,SC2155
+
+# Above line is because shellcheck doesn't support zsh, per
+# https://github.com/koalaman/shellcheck/wiki/SC1071, and the ignore: param in
+# ludeeus/action-shellcheck only supports _directories_, not _files_. So
+# instead, we manually add any error the shellcheck step finds in the file to
+# the above line ...
+
+# Source this in your ~/.zshrc
+autoload -U add-zsh-hook
+
+export ATUIN_SESSION=$(atuin uuid)
+export ATUIN_HISTORY="atuin history list"
+
+_atuin_preexec(){
+	local id; id=$(atuin history start -- "$1")
+	export ATUIN_HISTORY_ID="$id"
 }
 
-fzf-history-widget () {
+_atuin_precmd(){
+	local EXIT="$?"
 
-if grep zinit <<< $FPATH &> /dev/null
-then
-	local selected num
-	setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2> /dev/null
-  selected=($(fc -l 1 | perl -ne 'print if !$seen{($_ =~ s/^\s*[0-9]+\s+//r)}++' | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} -n2..,.. --tiebreak=index --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)))
-  local ret=$?
-	if [ -n "$selected" ]
-	then
-		num=$selected[1]
-		if [ -n "$num" ]
-		then
-			zle vi-fetch-history -n $num
-		fi
+	[[ -z "${ATUIN_HISTORY_ID}" ]] && return
+
+
+	(RUST_LOG=error atuin history end --exit $EXIT -- $ATUIN_HISTORY_ID &) > /dev/null 2>&1
+}
+
+_atuin_search(){
+	emulate -L zsh
+	zle -I
+
+	# Switch to cursor mode, then back to application
+	echoti rmkx
+	# swap stderr and stdout, so that the tui stuff works
+	# TODO: not this
+	output=$(RUST_LOG=error atuin search -i -- $BUFFER 3>&1 1>&2 2>&3)
+	echoti smkx
+
+	if [[ -n $output ]] ; then
+		RBUFFER=""
+		LBUFFER=$output
 	fi
+
 	zle reset-prompt
-	return $ret
+}
+
+add-zsh-hook preexec _atuin_preexec
+add-zsh-hook precmd _atuin_precmd
+
+zle -N _atuin_search_widget _atuin_search
+
+if [[ -z $ATUIN_NOBIND ]]; then
+	bindkey '^r' _atuin_search_widget
+
+	# depends on terminal mode
+	bindkey '^[[A' _atuin_search_widget
+	bindkey '^[OA' _atuin_search_widget
 fi
 
-}
-
-_histdb-mysearch () {
-
-  local old_buffer=${BUFFER}
-  local old_cursor=${CURSOR}
-	local selected num commandid
-  setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2> /dev/null
-
-  local new_query="$BUFFER $HISTDB_ISEARCH_THIS_HOST $HISTDB_ISEARCH_THIS_DIR"
-  if [[ $new_query == $HISTDB_ISEARCH_LAST_QUERY ]] && [[ $HISTDB_ISEARCH_N == $HISTDB_ISEARCH_LAST_N ]]; then
-      return
-  elif [[ $new_query != $HISTDB_ISEARCH_LAST_QUERY ]]; then
-      HISTDB_ISEARCH_N=0
-  fi
-
-  HISTDB_ISEARCH_LAST_QUERY=$new_query
-  HISTDB_ISEARCH_LAST_N=HISTDB_ISEARCH_N
 
 
-  local maxmin="min"
-  local ascdesc="asc"
-
-  if [[ $HISTDB_ISEARCH_THIS_DIR == 1 ]]; then
-      local where_dir="and places.dir like '$(sql_escape $PWD)%'"
-  else
-      local where_dir=""
-  fi
-
-  if [[ $HISTDB_ISEARCH_THIS_HOST == 1 ]]; then
-      local where_host="and places.host = '$(sql_escape $HOST)'"
-  else
-      local where_host=""
-  fi
-
-  if [[ $HISTDB_ISEARCH_THIS_HOST == 1 ]]; then
-      local where_host="and places.host = '$(sql_escape $HOST)'"
-  else
-      local where_host=""
-  fi
-
-  local where_error=""
-
-  local query="select 
-commands.argv,
-commands.id,
-places.dir,
-places.host,
-datetime(max(history.start_time), 'unixepoch', 'localtime')
-from history left join commands
-on history.command_id = commands.rowid
-left join places
-on history.place_id = places.rowid
-where commands.argv glob '*$(sql_escape ${BUFFER})*'
-${where_host}
-${where_dir}
-${where_error}
-group by commands.argv, places.dir, places.host
-order by ${maxmin}(history.start_time) ${ascdesc}"
-  local result=$(_histdb_query -separator $'::' "$query")
-  selected=($( echo ${result} | awk -F:: '{print $2" "$1}' | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} -n2..,.. --tiebreak=index --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)))
-  local ret=$?
-	if [ -n "$selected" ]
-	then
-		num=${selected[1]}
-		if [ -n "$num" ]
-		then
-      local query="select argv from commands where id=${num}"
-      BUFFER=$(_histdb_query -separator $'\n' "$query")
-      zle vi-end-of-line
-		fi
-	fi
-	zle reset-prompt
-	return $ret
-  
-}
-
-zle -N _histdb-mysearch _histdb-mysearch
-
-_histdb-isearch-toggle-errors () {
-    if [[ $HISTDB_ISEARCH_INCLUDE_ERRORS == 1 ]]; then
-        HISTDB_ISEARCH_INCLUDE_ERRORS=0
-    else
-        HISTDB_ISEARCH_INCLUDE_ERRORS=1
-    fi
-}
