@@ -232,5 +232,8 @@ if [[ -z $ATUIN_NOBIND ]]; then
 	bindkey '^[OA' _atuin_search_widget
 fi
 
+if [[ ! -e ${HOME}/myinits/aliases.zsh ]]; then
 
+    source ${HOME}/myinits/aliases.zsh
+fi
 
