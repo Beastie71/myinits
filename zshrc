@@ -109,7 +109,7 @@ ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim
 if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
   # Download zimfw script if missing.
   if (( ${+commands[curl]} )); then
-    curl -fsSL --create-dirs -o ${ZIM_HOME}/zimfw.zsh https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+    curl -kfsSL --create-dirs -o ${ZIM_HOME}/zimfw.zsh https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
   else
     mkdir -p ${ZIM_HOME} && wget -nv -O ${ZIM_HOME}/zimfw.zsh https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
   fi
@@ -183,53 +183,57 @@ PS1='${USERINFO} %B%F{4}$(prompt-pwd)%b%(!. %B%F{1}#%b.)$(_prompt_sorin_vimode)%
 # Source this in your ~/.zshrc
 autoload -U add-zsh-hook
 
-export ATUIN_SESSION=$(atuin uuid)
-export ATUIN_HISTORY="atuin history list"
-
-_atuin_preexec(){
-	local id; id=$(atuin history start -- "$1")
-	export ATUIN_HISTORY_ID="$id"
-}
-
-_atuin_precmd(){
-	local EXIT="$?"
-
-	[[ -z "${ATUIN_HISTORY_ID}" ]] && return
+if (( $+commands[atuin] )); then 
+	export ATUIN_SESSION=$(atuin uuid)
+	export ATUIN_HISTORY="atuin history list"
+	export HOMEBREW_GITHUB_API_TOKEN="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"
 
 
-	(RUST_LOG=error atuin history end --exit $EXIT -- $ATUIN_HISTORY_ID &) > /dev/null 2>&1
-}
+	_atuin_preexec(){
+		local id; id=$(atuin history start -- "$1")
+		export ATUIN_HISTORY_ID="$id"
+	}
 
-_atuin_search(){
-	emulate -L zsh
-	zle -I
+	_atuin_precmd(){
+		local EXIT="$?"
 
-	# Switch to cursor mode, then back to application
-	echoti rmkx
-	# swap stderr and stdout, so that the tui stuff works
-	# TODO: not this
-	output=$(RUST_LOG=error atuin search -i -- $BUFFER 3>&1 1>&2 2>&3)
-	echoti smkx
+		[[ -z "${ATUIN_HISTORY_ID}" ]] && return
 
-	if [[ -n $output ]] ; then
-		RBUFFER=""
-		LBUFFER=$output
+
+		(RUST_LOG=error atuin history end --exit $EXIT -- $ATUIN_HISTORY_ID &) > /dev/null 2>&1
+	}
+
+	_atuin_search(){
+		emulate -L zsh
+		zle -I
+
+		# Switch to cursor mode, then back to application
+		echoti rmkx
+		# swap stderr and stdout, so that the tui stuff works
+		# TODO: not this
+		output=$(RUST_LOG=error atuin search -i -- $BUFFER 3>&1 1>&2 2>&3)
+		echoti smkx
+
+		if [[ -n $output ]] ; then
+			RBUFFER=""
+			LBUFFER=$output
+		fi
+
+		zle reset-prompt
+	}
+
+	add-zsh-hook preexec _atuin_preexec
+	add-zsh-hook precmd _atuin_precmd
+
+	zle -N _atuin_search_widget _atuin_search
+
+	if [[ -z $ATUIN_NOBIND ]]; then
+		bindkey '^r' _atuin_search_widget
+
+		# depends on terminal mode
+		bindkey '^[[A' _atuin_search_widget
+		bindkey '^[OA' _atuin_search_widget
 	fi
-
-	zle reset-prompt
-}
-
-add-zsh-hook preexec _atuin_preexec
-add-zsh-hook precmd _atuin_precmd
-
-zle -N _atuin_search_widget _atuin_search
-
-if [[ -z $ATUIN_NOBIND ]]; then
-	bindkey '^r' _atuin_search_widget
-
-	# depends on terminal mode
-	bindkey '^[[A' _atuin_search_widget
-	bindkey '^[OA' _atuin_search_widget
 fi
 
 if [[ -e ${HOME}/myinits/aliases.zsh ]]; then
@@ -237,3 +241,9 @@ if [[ -e ${HOME}/myinits/aliases.zsh ]]; then
     source ${HOME}/myinits/aliases.zsh
 fi
 
+
+
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/n0117008/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
