@@ -156,7 +156,7 @@ if (( ${+functions[duration-info-preexec]} && \
       add-zsh-hook precmd duration-info-precmd
 fi
 export YSU_MODE=ALL
-export PATH=${PATH}:${HOME}/.cargo/bin
+export PATH=${PATH}:${HOME}/.cargo/bin:/opt/homebrew/bin
 
 TIME="%{$bg[black]$fg[white]%}%*%{$reset_color%}"
 USERINFO="%{$fg[yellow]%}${USERNAME}@${HOST}%{$reset_color%}"
