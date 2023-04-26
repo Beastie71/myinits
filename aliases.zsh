@@ -19,7 +19,6 @@ elif [[ -x /usr/local/bin/gls ]]; then
     alias ls="${aliases[ls]:-ls} -F"
   fi
 else
-  export "using BSD at /bin/ls"
   # BSD Core Utilities
   if zstyle -t ':prezto:module:utility:ls' color; then
     export JOEBLOW="joejoe"

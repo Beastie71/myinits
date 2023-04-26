@@ -156,7 +156,7 @@ if (( ${+functions[duration-info-preexec]} && \
       add-zsh-hook precmd duration-info-precmd
 fi
 export YSU_MODE=ALL
-export PATH=${PATH}:/home/michaell/.cargo/bin
+export PATH=${PATH}:${HOME}/.cargo/bin
 
 TIME="%{$bg[black]$fg[white]%}%*%{$reset_color%}"
 USERINFO="%{$fg[yellow]%}${USERNAME}@${HOST}%{$reset_color%}"
@@ -183,11 +183,13 @@ PS1='${USERINFO} %B%F{4}$(prompt-pwd)%b%(!. %B%F{1}#%b.)$(_prompt_sorin_vimode)%
 # Source this in your ~/.zshrc
 autoload -U add-zsh-hook
 
+if [ -f ${HOME}/myinits/API ]; then 
+	export HOMEBREW_GITHUB_API_TOKEN=`cat ${HOME}/myinits/API`
+fi 
+
 if (( $+commands[atuin] )); then 
 	export ATUIN_SESSION=$(atuin uuid)
 	export ATUIN_HISTORY="atuin history list"
-	export HOMEBREW_GITHUB_API_TOKEN="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"
-
 
 	_atuin_preexec(){
 		local id; id=$(atuin history start -- "$1")
@@ -245,5 +247,5 @@ fi
 
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/n0117008/.rd/bin:$PATH"
+export PATH="${HOME}/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
