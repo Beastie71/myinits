@@ -243,6 +243,11 @@ if [[ -e ${HOME}/myinits/aliases.zsh ]]; then
     source ${HOME}/myinits/aliases.zsh
 fi
 
+if [[ -e ${HOME}/myinits/kubectl_completion ]]; then
+
+    source ${HOME}/myinits/kubectl_completion
+fi
+
 
 
 
