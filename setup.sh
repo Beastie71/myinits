@@ -10,7 +10,7 @@ while getopts "ai" opt
 do
     case $opt in
     (i) do_all=0 ; do_inits=1 ;;
-    (a) do_all=1 ; 
+    (a) do_all=1 ;;
     (*) printf "Illegal option '-%s'\n" "$opt" && exit 1 ;;
     esac
 done
@@ -25,14 +25,15 @@ if [[ $do_all -eq 1 ]]; then
         fi
     fi
     haszsh=`zsh --version`
-    if [[ ! ${haszsh} =~ "*zsh*"]]; then
+    if [[ ${haszsh} =~ "*zsh*" ]]; then
         echo "You must install zsh first."
         exit 1
     fi
     if [[ ! -x ${HOME}/.cargo/bin/atuin ]]; then
-        if [[ ${OSTYPE} =~ "*darwin*"]]; then
+        if [[ ${OSTYPE} =~ "*darwin*" ]]; then
+            echo "MacOS"
             cargoout=`cargo -V`
-            if [[ ${cargoout} =~ "cargo"]]; then
+            if [[ ! ${cargoout} =~ "cargo" ]]; then
                 installatuin=true
             else
                 brew=`which brew`
@@ -49,13 +50,14 @@ if [[ $do_all -eq 1 ]]; then
                     fi
                 fi
             fi
-        elif [[ ${OSTYPE} =~ "*linux*"]]; then
+        elif [[ ${OSTYPE} =~ "*linux*" ]]; then
+            echo "Linux"
             cargoout=`cargo -V`
-            if [[ ${cargoout} =~ "cargo"]]; then
+            if [[ ! ${cargoout} =~ "cargo" ]]; then
                 installatuin=true
             else
                 name=`egrep "^NAME" /etc/os-release`
-                if [[ ${name,,} =~ "*suse*"]]; then
+                if [[ ! ${name,,} =~ "*suse*" ]]; then
                     sudo zypper install -y -l cargo
                     if [[ $? -eq 0 ]]; then
                         installatuin=true
@@ -63,7 +65,7 @@ if [[ $do_all -eq 1 ]]; then
                         echo "Something went wrong installing cargo.  Please try yourself."
                         exit 1
                     fi
-                elif [[ ${name,,} =~ "*ubuntu*"]]; then
+                elif [[ ! ${name,,} =~ "*ubuntu*" ]]; then
                     sudo apt-get --assume-yes install cargo
                     if [[ $? -eq 0 ]]; then 
                         installatuin=1
@@ -110,7 +112,7 @@ elif [[ $do_inits -eq 1 ]]; then
         fi
     fi
     haszsh=`zsh --version`
-    if [[ ! ${haszsh} =~ "*zsh*"]]; then
+    if [[ ${haszsh} =~ "*zsh*" ]]; then
         echo "You must install zsh first."
         exit 1
     fi
@@ -168,7 +170,8 @@ fi
 
 if [[ $do_all -eq 1 ]]; then
     echo "Running zimfw."
-    ${HOME}/.zim/zimfw.zsh install
+    chmod u+x ${HOME}/.zim/zimfw.zsh
+    zsh -c ${HOME}/.zim/zimfw.zsh install
     if [[ ! $? -eq 0 ]]; then
         echo "Error running zimfw, please try yourself:  ${HOME}/.zim/zimfw.zsh install"
         exit 1
