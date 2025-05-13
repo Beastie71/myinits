@@ -13,6 +13,12 @@
 
 # Remove older command from the history if a duplicate is to be added.
 #
+export PROFILING_MODE=0
+export DOKUBE=0
+if [ $PROFILING_MODE  -ne 0 ]; then
+    zmodload zsh/zprof
+fi
+
 OKMARK="✔"
 HOURGLASS=""
 
@@ -145,7 +151,8 @@ bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
 # }}} End configuration added by Zim install
 
-autoload -Uz compinit; compinit; _comp_options+=(globdots);
+#autoload -Uz compinit; compinit; _comp_options+=(globdots);
+autoload -Uz compinit; _comp_options+=(globdots);
 autoload -U colors && colors
 
 if (( ${+functions[duration-info-preexec]} && \
@@ -243,14 +250,21 @@ if [[ -e ${HOME}/myinits/aliases.zsh ]]; then
     source ${HOME}/myinits/aliases.zsh
 fi
 
-if [[ -e ${HOME}/myinits/kubectl_completion ]]; then
+if [[ -e ${HOME}/myinits/kubectl_completion && $DOKUBE -ne 0 ]]; then
 
     source ${HOME}/myinits/kubectl_completion
 fi
 
-
+if [[ -e ${HOME}/.tmux/plugins/tpm/tpm ]]; then
+    ln -sf ${HOME}/myinits/tmux.conf.with.plugins ${HOME}/.tmux.conf
+else
+    ln -sf ${HOME}/myinits/tmux.conf ${HOME}/.tmux.conf
+fi
 
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="${HOME}/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+if [ $PROFILING_MODE  -ne 0 ]; then
+    zprof
+fi
