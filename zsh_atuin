@@ -7,7 +7,7 @@
 # the above line ...
 
 # Source this in your ~/.zshrc
-autoload -U add-zsh-hook
+#done in zshrcautoload -U add-zsh-hook
 
 zmodload zsh/datetime 2>/dev/null
 
