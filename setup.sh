@@ -16,7 +16,7 @@ do
 done
 
 if [[ $do_all -eq 1 ]]; then
-    if [[ ! -d ${HOME}/myinits ]]; then 
+    if [[ ! -d ${HOME}/myinits ]]; then
         echo "Cloning my init files."
         git clone https://github.com/Beastie71/myinits.git
         if [[ ! $? -eq 0 ]]; then
@@ -41,8 +41,8 @@ if [[ $do_all -eq 1 ]]; then
                     echo "You must have HomeBrew installed first."
                     exit 1
                 else
-                    ${brew} install -q rustup 
-                    if [[ $? -eq 0 ]]; then 
+                    ${brew} install -q rustup
+                    if [[ $? -eq 0 ]]; then
                         installatuin=true
                     else
                         echo "Something went wrong on installing cargo."
@@ -67,7 +67,7 @@ if [[ $do_all -eq 1 ]]; then
                     fi
                 elif [[ ! ${name,,} =~ "*ubuntu*" ]]; then
                     sudo apt-get --assume-yes install cargo
-                    if [[ $? -eq 0 ]]; then 
+                    if [[ $? -eq 0 ]]; then
                         installatuin=1
                     else
                         echo "Something went wrong installing cargo.  Please try yourself."
@@ -78,7 +78,7 @@ if [[ $do_all -eq 1 ]]; then
                 fi
             fi
         fi
-        if [[] ! -d ${HOME}/.zim ]]; then
+        if [[ ! -d ${HOME}/.zim ]]; then
             echo "Installing zim."
         if [ -a ${HOME}/.zshrc ]; then
             mv ${HOME}/.zshrc ${HOME}/.zshrc.prezim-${date}
@@ -101,9 +101,9 @@ if [[ $do_all -eq 1 ]]; then
         fi
     fi
 
-elif [[ $do_inits -eq 1 ]]; then 
+elif [[ $do_inits -eq 1 ]]; then
 
-    if [[ ! -d ${HOME}/myinits ]]; then 
+    if [[ ! -d ${HOME}/myinits ]]; then
         echo "Cloning my init files."
         git clone https://github.com/Beastie71/myinits.git
         if [[ ! $? -eq 0 ]]; then
@@ -155,7 +155,7 @@ elif [[ $do_inits -eq 1 ]]; then
 
     if [ -f ${HOME}/.zimrc ]; then
         mv ${HOME}/.zimrc ${HOME}/.zimrc-${date}
-    elif [ -h ${HOME}/.zimrc ]; then 
+    elif [ -h ${HOME}/.zimrc ]; then
         rm -f ${HOME}/.zlogin
     fi
     ln -s ${HOME}/myinits/zimrc ${HOME}/.zimrc

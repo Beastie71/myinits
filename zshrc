@@ -10,6 +10,10 @@ setopt HIST_IGNORE_ALL_DUPS
 bindkey -e
 WORDCHARS=${WORDCHARS//[\/]} # Remove path separator
 
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # -----------------
 # Zim configuration
 # -----------------
@@ -74,7 +78,7 @@ USERINFO="%{$fg[yellow]%}${USERNAME}@${HOST}%{$reset_color%}"
 ERRORINFO="%{$bg[black]$fg[red]%}!!%?!!%{$reset_color%}"
 SPROMPT='zsh: correct %F{1}%R%f to %F{2}%r%f [nyae]? '
 
-PS1='${USERINFO} %B%F{4}$(prompt-pwd)%b%(!. %B%F{1}#%b.)${_prompt_sorin_vimode:-%{$reset_color%}}%f ' ## OPTIMIZED: Added default for vimode prompt part
+PS1='${USERINFO} %B%F{4}$(prompt-pwd)%b%(!. %B%F{1}#%b.)${_prompt_sorin_vimode:-%{$reset_color%}}%f >' ## OPTIMIZED: Added default for vimode prompt part
 RPS1='${VIRTUAL_ENV:+"%F{3}(${VIRTUAL_ENV:t})"}%(?:: ${ERRORINFO} )${VIM:+" %B%F{6}V%b"}${(e)git_info[status]}%f ${duration_info}${TIME}'
 
 # -- Aliases & Functions --
@@ -155,46 +159,7 @@ alias -g LL="2>&1 | less"
 # -- Tool Initializations & Sourced Files --
 
 # Atuin Shell History
-if (( $+commands[atuin] )); then
-  export ATUIN_SESSION=$(atuin uuid)
-  # export ATUIN_HISTORY="atuin history list" # This variable is not typically needed by Atuin itself
-  _atuin_preexec(){
-    local id; id=$(atuin history start -- "$1")
-    export ATUIN_HISTORY_ID="$id"
-  }
-  _atuin_precmd(){
-    local EXIT="$?"
-    [[ -z "${ATUIN_HISTORY_ID}" ]] && return
-    (RUST_LOG=error atuin history end --exit $EXIT -- $ATUIN_HISTORY_ID &) > /dev/null 2>&1 &! # Ensure fully detached
-  }
-  _atuin_search(){
-    emulate -L zsh
-    zle -I # Invalidate buffer
-    echoti rmkx # Switch to cursor mode (terminfo)
-    # Swap stderr and stdout for TUI interaction
-    output=$(RUST_LOG=error atuin search --interactive --filter-mode host -- $BUFFER 3>&1 1>&2 2>&3)
-    echoti smkx # Switch back to application mode (terminfo)
-    if [[ -n $output ]] ; then
-      LBUFFER=$output
-      RBUFFER=""
-    fi
-    zle reset-prompt
-    zle -R # Redisplay
-  }
-
-  autoload -U add-zsh-hook
-  add-zsh-hook preexec _atuin_preexec
-  add-zsh-hook precmd _atuin_precmd
-  zle -N _atuin_search_widget _atuin_search
-
-  if [[ -z $ATUIN_NOBIND ]]; then
-    bindkey '^r' _atuin_search_widget
-    # Arrow key bindings for search can be tricky due to terminal modes.
-    # Check your terminal and Atuin docs if these don't work as expected.
-    # bindkey "${terminfo[kcuu1]}" _atuin_search_widget # Up arrow (if terminfo available)
-    # bindkey '^[OA' _atuin_search_widget # Common alternative for up arrow
-  fi
-fi
+source ${HOME}/myinits/zsh_atuin
 
 # Kubernetes Completion (sourced conditionally)
 ## OPTIMIZED: Consider using Zim's `kubernetes` module if available for simpler management.
@@ -203,7 +168,12 @@ if [[ $DOKUBE -ne 0 && -e ${HOME}/myinits/kubectl_completion ]]; then
   # Zim might handle this if one of its modules needs it.
   # If not, uncomment the next line:
   # autoload -U +X bashcompinit && bashcompinit
-  source ${HOME}/myinits/kubectl_completion
+  kubectl() {
+     unfunction kubectl
+     source ${HOME}/myinits/kubectl_completion
+     command kubectl "$@"
+  }
+
 fi
 
 # Duration Info Hook Setup (from Zim, requires add-zsh-hook)
@@ -244,3 +214,13 @@ fi
 #   ln -sf ${HOME}/myinits/tmux.conf ${HOME}/.tmux.conf
 # fi
 # Run the above ln -sf command ONCE manually in your terminal.
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/michael/.lmstudio/bin"
+# End of LM Studio CLI section
+
+
+# Source NPCSH configuration
+if [ -f ~/.npcshrc ]; then
+    . ~/.npcshrc
+fi
