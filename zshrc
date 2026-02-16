@@ -52,24 +52,6 @@ source ${ZIM_HOME}/init.zsh
 # -------------------------- USER CONFIGURATION -------------------------------
 # -----------------------------------------------------------------------------
 
-# -- Environment Variables & PATH --
-export PROFILING_MODE=0
-export DOKUBE=0 # Set to 1 to enable Kubernetes tools/completions
-
-typeset -U path # Use Zsh's array for PATH, prevents duplicates
-path=(
-  "${HOME}/.rd/bin"          # Rancher Desktop
-  "/opt/homebrew/bin"        # Homebrew (adjust if your path is different e.g. /usr/local/bin for older macOS or Linux)
-  "${HOME}/.cargo/bin"       # Rust/Cargo
-  $path                      # Original system PATH
-)
-
-if [[ -f ${HOME}/myinits/API ]]; then
-  export HOMEBREW_GITHUB_API_TOKEN=$(< "${HOME}/myinits/API")
-fi
-
-export YSU_MODE=ALL # Assuming this is for Yet Another Shell Utility or similar
-
 # -- Shell Prompt (PS1) --
 autoload -U colors && colors
 
@@ -81,54 +63,6 @@ SPROMPT='zsh: correct %F{1}%R%f to %F{2}%r%f [nyae]? '
 PS1='${USERINFO} %B%F{4}$(prompt-pwd)%b%(!. %B%F{1}#%b.)${_prompt_sorin_vimode:-%{$reset_color%}}%f >' ## OPTIMIZED: Added default for vimode prompt part
 RPS1='${VIRTUAL_ENV:+"%F{3}(${VIRTUAL_ENV:t})"}%(?:: ${ERRORINFO} )${VIM:+" %B%F{6}V%b"}${(e)git_info[status]}%f ${duration_info}${TIME}'
 
-# -- Aliases & Functions --
-
-## OPTIMIZED: Lazy-loading function for `ls` to improve startup time.
-## This function sets up ls colors and aliases the first time ls is called.
-#_setup_ls_aliases() {
-#  unfunction _setup_ls_aliases # Remove this loader after first run
-#
-#  local ls_cmd
-#  # Determine if GNU ls is available
-#  if command /bin/ls --help 2>&1 | grep -q 'GNU coreutils'; then
-#    ls_cmd="/bin/ls"
-#    # Setup GNU dircolors
-#    if [[ -s "$HOME/.dir_colors" ]]; then
-#      eval "$(dircolors --sh "$HOME/.dir_colors")"
-#    else
-#      eval "$(dircolors --sh)"
-#    fi
-#    alias ls="${ls_cmd} --color=auto -F"
-#    # export JOEBLOW="gnu ls at /bin/ls" # Uncomment if you need this env var
-#  elif command /usr/local/bin/gls --help 2>&1 | grep -q 'GNU coreutils'; then
-#    ls_cmd="/usr/local/bin/gls"
-#    # Setup GNU dircolors (using gdircolors if available, otherwise dircolors)
-#    local dircolors_cmd
-#    command -v gdircolors >/dev/null && dircolors_cmd="gdircolors" || dircolors_cmd="dircolors"
-#    if [[ -s "$HOME/.dir_colors" ]]; then
-#      eval "$(${dircolors_cmd} --sh "$HOME/.dir_colors")"
-#    else
-#      eval "$(${dircolors_cmd} --sh)"
-#    fi
-#    alias ls="${ls_cmd} --color=auto -F"
-#    # export JOEBLOW="using /usr/local/bin/gls" # Uncomment if you need this env var
-#  else
-#    # BSD Core Utilities (default for macOS if GNU ls not installed)
-#    ls_cmd="/bin/ls" # or whatever your system's default ls is
-#    export LSCOLORS='bxfxcxdxbxGxDxabagacad' # Your preferred BSD LSCOLORS
-#    # For completion system consistency with BSD ls -G
-#    export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'
-#    alias ls="${ls_cmd} -G -F" # -G for color on BSD, -F for indicators
-#    # export JOEBLOW="bsd ls" # Uncomment if you need this env var
-#  fi
-#
-#  alias lsd="${aliases[ls]:-ls} --group-directories-first" # Works if ls is GNU ls or compatible
-#
-#  # Call the intended ls command now that aliases are set up
-#  $ls_cmd "$@"
-#}
-#alias ls='_setup_ls_aliases' # The first call to 'ls' will run the setup
-#alias lsd='_setup_ls_aliases --group-directories-first'  # First lsd also triggers setup
 alias lsd='ls --group-directories-first'  # First lsd also triggers setup
 
 # Standard Aliases
@@ -183,42 +117,12 @@ if (( ${+functions[duration-info-preexec]} && ${+functions[duration-info-precmd]
   add-zsh-hook precmd duration-info-precmd
 fi
 
-# -- Keybindings (Post-init module configuration) --
-# zsh-history-substring-search (if loaded by Zim)
-#if (( ${+functions[history-substring-search-up]} )); then # Check if function exists
-#  bindkey '^[[A' history-substring-search-up # Or ${terminfo[kcuu1]} if preferred and loaded
-#  bindkey '^[[B' history-substring-search-down # Or ${terminfo[kcud1]}
-#  # zmodload -F zsh/terminfo +p:terminfo # Already done by Zim or can be added if needed
-#  # if [[ -n ${terminfo[kcuu1]} && -n ${terminfo[kcud1]} ]]; then
-#  #   bindkey ${terminfo[kcuu1]} history-substring-search-up
-#  #   bindkey ${terminfo[kcud1]} history-substring-search-down
-#  # fi
-#  bindkey '^P' history-substring-search-up
-#  bindkey '^N' history-substring-search-down
-#  bindkey -M vicmd 'k' history-substring-search-up
-#  bindkey -M vicmd 'j' history-substring-search-down
-#fi
-
 # -- Finalization & Profiling --
 ## OPTIMIZED: Moved zprof loading and call to the very end.
 if [ $PROFILING_MODE -ne 0 ]; then
   zmodload zsh/zprof
   zprof
 fi
-
-## OPTIMIZED: Removed tmux symlink logic. Do this once manually.
-# Example:
-# if [[ -e ${HOME}/.tmux/plugins/tpm/tpm ]]; then
-#   ln -sf ${HOME}/myinits/tmux.conf.with.plugins ${HOME}/.tmux.conf
-# else
-#   ln -sf ${HOME}/myinits/tmux.conf ${HOME}/.tmux.conf
-# fi
-# Run the above ln -sf command ONCE manually in your terminal.
-
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/home/michael/.lmstudio/bin"
-# End of LM Studio CLI section
-
 
 # Source NPCSH configuration
 if [ -f ~/.npcshrc ]; then
