@@ -41,6 +41,7 @@ fi
 if [[ ! ${aliases[ls]} = *" -F"* ]]; then 
     alias ls="${aliases[ls]:-ls} -F"
 fi
+
 alias lsd="${aliases[ls]:-ls} --group-directories-first"
 alias k="kubectl"
 alias dv="dirs -v"
@@ -61,3 +62,4 @@ alias -g TF='| tail -f'
 alias -g US='| sort -u'
 alias -g X='| xargs'
 alias -g LL="2>&1 | less"
+alias rsynccp="rsync --archive --modify-window=2 --progress --verbose --itemize-changes --stats --human-readable"
