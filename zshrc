@@ -65,31 +65,6 @@ RPS1='${VIRTUAL_ENV:+"%F{3}(${VIRTUAL_ENV:t})"}%(?:: ${ERRORINFO} )${VIM:+" %B%F
 
 alias lsd='ls --group-directories-first'  # First lsd also triggers setup
 
-# Standard Aliases
-alias k="kubectl"
-alias dv="dirs -v"
-alias zz="z -c" # zoxide/z.sh: matches directories only under $PWD
-alias zi="z -I" # zoxide/z.sh: use fzf to select in multiple matches
-alias rsynccp="rsync --archive --modify-window=2 --progress --verbose --itemize-changes --stats --human-readable"
-
-# Global Aliases
-alias -g C='| wc -l'
-alias -g EG='|& egrep'
-alias -g EL='|& less'
-alias -g ETL='|& tail -20'
-alias -g ET='|& tail'
-alias -g G='| egrep' # Use G for grep if not already used by ls -G in BSD alias
-alias -g NS='| sort -n'
-alias -g NUL="> /dev/null 2>&1"
-alias -g S='| sort'
-alias -g TL='| tail -20'
-alias -g T='| tail'
-alias -g TF='| tail -f'
-alias -g US='| sort -u'
-alias -g X='| xargs'
-alias -g LL="2>&1 | less"
-
-
 # -- Tool Initializations & Sourced Files --
 
 # Atuin Shell History
@@ -122,6 +97,10 @@ fi
 if [ $PROFILING_MODE -ne 0 ]; then
   zmodload zsh/zprof
   zprof
+fi
+
+if [[ -e ${HOME}/myinits/aliases.zsh ]]; then
+    source ${HOME}/myinits/aliases.zsh
 fi
 
 # Source NPCSH configuration
