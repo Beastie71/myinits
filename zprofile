@@ -44,6 +44,9 @@ typeset -gU cdpath fpath mailpath path
 # Set the list of directories that Zsh searches for programs.
 path=(
   /usr/local/{bin,sbin,go/bin}
+   "${HOME}/.rd/bin"          # Rancher Desktop
+   "/opt/homebrew/bin"        # Homebrew (adjust if your path is different e.g. /usr/local/bin for older macOS or Linux)
+   "${HOME}/.cargo/bin"       # Rust/Cargo
   $path
 )
 
@@ -84,3 +87,11 @@ if [[ -e "${HOME}/Documents/workspace/class" ]]; then
   GOPATH=$GOPATH:"${HOME}/Documents/workspace/class"
   GOBIN=${GOBIN}:"${HOME}/Documents/workspace/class/bin"
 fi
+
+export PROFILING_MODE=0
+export DOKUBE=0 # Set to 1 to enable Kubernetes tools/completions
+
+if [[ -f ${HOME}/myinits/API ]]; then
+  export HOMEBREW_GITHUB_API_TOKEN=$(< "${HOME}/myinits/API")
+fi
+
