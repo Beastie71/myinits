@@ -47,6 +47,7 @@ path=(
    "${HOME}/.rd/bin"          # Rancher Desktop
    "/opt/homebrew/bin"        # Homebrew (adjust if your path is different e.g. /usr/local/bin for older macOS or Linux)
    "${HOME}/.cargo/bin"       # Rust/Cargo
+   "${HOME}/.local/bin"       # claude
   $path
 )
 
