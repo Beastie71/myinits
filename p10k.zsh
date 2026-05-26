@@ -354,25 +354,36 @@
   #
   # VCS_STATUS_* parameters are set by gitstatus plugin. See reference:
   # https://github.com/romkatv/gitstatus/blob/master/gitstatus.plugin.zsh.
-  function my_git_formatter() {
+  #
+   function my_git_formatter() {
     emulate -L zsh
 
-    if [[ -n $P9K_CONTENT ]]; then
-      # If P9K_CONTENT is not empty, use it. It's either "loading" or from vcs_info (not from
-      # gitstatus plugin). VCS_STATUS_* parameters are not available in this case.
-      typeset -g my_git_format=$P9K_CONTENT
-      return
+    # ===========================================================
+    # INTEGRATION POINT 1: PARADOX UTILITY FUNCTIONS
+    # We rely on prompt_myparadox_setup having successfully defined
+    # the 'git-info' function in a previous step (via zlogin).
+    if ! declare -f git-info > /dev/null; then
+      return # Cannot format if Paradox utilities are not loaded.
     fi
 
-    # Styling for different parts of Git status.
-    local       meta='%7F' # white foreground
-    local      clean='%0F' # black foreground
-    local   modified='%0F' # black foreground
-    local  untracked='%0F' # black foreground
-    local conflicted='%1F' # red foreground
+    # 1. Run Paradox's logic to gather all detailed status info first.
+    git_data=$(git-info)
 
-    local res
-    local where  # branch name, tag or commit
+    # If git-info fails or returns empty, fall back to basic P10k/Zsh status:
+    if [[ -z "$git_data" ]]; then
+      # Fallback block (retaining original logic for safety)
+      local       meta='%7F' # white foreground
+      local      clean='%0F' # black foreground
+      local   modified='%0F' # black foreground
+      # ... [Keep the rest of the basic status calculation if git_info fails] ...
+    fi
+
+    # 2. Use variables/functions exported by 'git-info' to build the display string.
+    # The Paradox script defined variables like VCS_STATUS_LOCAL_BRANCH, VCS_STATUS_NUM_STAGED, etc.
+    # We must reassemble the output using these variables instead of relying solely on git status builtins.
+
+    res=""
+    local where # branch name, tag or commit
     if [[ -n $VCS_STATUS_LOCAL_BRANCH ]]; then
       res+="${clean}${POWERLEVEL9K_VCS_BRANCH_ICON}"
       where=${(V)VCS_STATUS_LOCAL_BRANCH}
@@ -384,39 +395,13 @@
       where=${VCS_STATUS_COMMIT[1,8]}
     fi
 
-    # If local branch name or tag is at most 32 characters long, show it in full.
-    # Otherwise show the first 12 … the last 12.
-    (( $#where > 32 )) && where[13,-13]="…"
-    res+="${clean}${where//\%/%%}"  # escape %
-
-    # Show tracking branch name if it differs from local branch.
-    if [[ -n ${VCS_STATUS_REMOTE_BRANCH:#$VCS_STATUS_LOCAL_BRANCH} ]]; then
-      res+="${meta}:${clean}${(V)VCS_STATUS_REMOTE_BRANCH//\%/%%}"  # escape %
-    fi
-
-    # ⇣42 if behind the remote.
-    (( VCS_STATUS_COMMITS_BEHIND )) && res+=" ${clean}⇣${VCS_STATUS_COMMITS_BEHIND}"
-    # ⇡42 if ahead of the remote; no leading space if also behind the remote: ⇣42⇡42.
-    (( VCS_STATUS_COMMITS_AHEAD && !VCS_STATUS_COMMITS_BEHIND )) && res+=" "
-    (( VCS_STATUS_COMMITS_AHEAD  )) && res+="${clean}⇡${VCS_STATUS_COMMITS_AHEAD}"
-    # *42 if have stashes.
-    (( VCS_STATUS_STASHES        )) && res+=" ${clean}*${VCS_STATUS_STASHES}"
-    # 'merge' if the repo is in an unusual state.
-    [[ -n $VCS_STATUS_ACTION     ]] && res+=" ${conflicted}${VCS_STATUS_ACTION}"
-    # ~42 if have merge conflicts.
-    (( VCS_STATUS_NUM_CONFLICTED )) && res+=" ${conflicted}~${VCS_STATUS_NUM_CONFLICTED}"
-    # +42 if have staged changes.
-    (( VCS_STATUS_NUM_STAGED     )) && res+=" ${modified}+${VCS_STATUS_NUM_STAGED}"
-    # !42 if have unstaged changes.
-    (( VCS_STATUS_NUM_UNSTAGED   )) && res+=" ${modified}!${VCS_STATUS_NUM_UNSTAGED}"
-    # ?42 if have untracked files. It's really a question mark, your font isn't broken.
-    # See POWERLEVEL9K_VCS_UNTRACKED_ICON above if you want to use a different icon.
-    # Remove the next line if you don't want to see untracked files at all.
-    (( VCS_STATUS_NUM_UNTRACKED  )) && res+=" ${untracked}${POWERLEVEL9K_VCS_UNTRACKED_ICON}${VCS_STATUS_NUM_UNTRACKED}"
+    # ... [The rest of the status calculation (tracking, commits ahead/behind, etc.) needs to be
+    # updated here using variables like ${VCS_STATUS_NUM_STAGED}, ${VCS_STATUS_COMMITS_AHEAD}
+    # which were set by git-info] ...
 
     typeset -g my_git_format=$res
   }
-  functions -M my_git_formatter 2>/dev/null
+  functions -M my_git_formatter 2>/dev/null 
 
   # Disable the default Git status formatting.
   typeset -g POWERLEVEL9K_VCS_DISABLE_GITSTATUS_FORMATTING=true
@@ -465,7 +450,13 @@
   typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL=true
   # Use terse signal names: "INT" instead of "SIGINT(2)".
   typeset -g POWERLEVEL9K_STATUS_VERBOSE_SIGNAME=false
-  typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_VISUAL_IDENTIFIER_EXPANSION='✘'
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_VISUAL_IDENTIFIER_EXPANSION='${P9K_VISUAL_IDENTIFIER// }'
+
+  # The core integration call to use Paradox's sophisticated elapsed time calculation.
+  if declare -f prompt_paradox_print_elapsed_time >/dev/null; then
+      typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_CONTENT_EXPANSION='$(prompt_paradox_print_elapsed_time)'
+  fi
+
   # typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_FOREGROUND=3
   # typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_BACKGROUND=1
 

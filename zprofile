@@ -96,3 +96,7 @@ if [[ -f ${HOME}/myinits/API ]]; then
   export HOMEBREW_GITHUB_API_TOKEN=$(< "${HOME}/myinits/API")
 fi
 
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/michael/bin:$PATH"

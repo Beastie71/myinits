@@ -99,7 +99,7 @@ if [ $PROFILING_MODE -ne 0 ]; then
   zprof
 fi
 
-if [[ -e ${HOME}/myinits/aliases.zsh ]]; then
+if [[ -f ${HOME}/myinits/aliases.zsh ]]; then
     source ${HOME}/myinits/aliases.zsh
 fi
 
@@ -107,3 +107,12 @@ fi
 if [ -f ~/.npcshrc ]; then
     . ~/.npcshrc
 fi
+
+
+# Added by Antigravity CLI installer
+export PATH="${HOME}/bin:$PATH"
+
+# Added by LM Studio CLI tool (lms)
+export PATH="$PATH:${HOME}/.lmstudio/bin"
+
+. "$HOME/.local/share/../bin/env"

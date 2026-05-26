@@ -14,7 +14,7 @@
 #
 
 # Load dependencies.
-pmodload 'helper'
+# pmodload 'helper'
 
 # Define variables.
 _prompt_paradox_current_bg='NONE'
@@ -139,8 +139,10 @@ function prompt_paradox_setup {
   autoload -Uz add-zsh-hook
 
   # Add hook for calling git-info before each command.
-  add-zsh-hook preexec prompt_paradox_preexec
-  add-zsh-hook precmd prompt_paradox_precmd
+# CORE HOOKS - COMMENTED OUT TO PREVENT CONFLICT WITH POWERLEVEL10K
+# add-zsh-hook preexec prompt_paradox_preexec
+# add-zsh-hook precmd prompt_paradox_precmd
+
 
   # Set editor-info parameters.
   zstyle ':prezto:module:editor:info:completing' format '%B%F{red}...%f%b'

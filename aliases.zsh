@@ -85,3 +85,4 @@ alias -g US='| sort -u'
 alias -g X='| xargs'
 alias -g LL="2>&1 | less"
 alias rsynccp="rsync --archive --modify-window=2 --progress --verbose --itemize-changes --stats --human-readable"
+alias myservices="systemctl --user list-units --type=service --all"

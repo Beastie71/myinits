@@ -12,6 +12,7 @@
   if [[ -s "$zcompdump" && (! -s "${zcompdump}.zwc" || "$zcompdump" -nt "${zcompdump}.zwc") ]]; then
     zcompile "$zcompdump"
   fi
+  source /home/michael/myinits/functions/prompt_myparadox_setup
 } &!
 
 # Print a random, hopefully interesting, adage.
